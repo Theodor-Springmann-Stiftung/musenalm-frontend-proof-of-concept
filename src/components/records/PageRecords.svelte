@@ -163,7 +163,7 @@
                 {#if $activeCollection.type !== "view"}
                     <button type="button" class="btn btn-expanded" on:click={() => recordUpsertPanel?.show()}>
                         <i class="ri-add-line" />
-                        <span class="txt">Eintrag erstellen</span>
+                        <span class="txt">Datensatz erstellen</span>
                     </button>
                 {/if}
             </div>

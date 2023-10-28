@@ -4,7 +4,6 @@
     import tooltip from "@/actions/tooltip";
     import { hideControls } from "@/stores/app";
     import { collections, activeCollection, isCollectionsLoading } from "@/stores/collections";
-    import CollectionUpsertPanel from "@/components/collections/CollectionUpsertPanel.svelte";
 
     export let collection;
     export let pinnedIds;

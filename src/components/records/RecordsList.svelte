@@ -44,8 +44,6 @@
 
     $: isView = collection?.type === "view";
 
-    $: isAuth = collection?.type === "auth";
-
     $: fields = collection?.schema || [];
 
     $: editorFields = fields.filter((field) => field.type === "editor");
@@ -73,12 +71,6 @@
     $: hasUpdated = !isView || (records.length > 0 && typeof records[0].updated != "undefined");
 
     $: collumnsToHide = [].concat(
-        isAuth
-            ? [
-                  { id: "@username", name: "username" },
-                  { id: "@email", name: "email" },
-              ]
-            : [],
         fields.map((f) => {
             return { id: f.id, name: f.name };
         }),
@@ -254,7 +246,7 @@
 
     function deleteSelectedConfirm() {
         const msg = `Möchten Sie ${
-            totalBulkSelected === 1 ? "den ausgewählten Eintrag" : "die ausgewählten Einträge"
+            totalBulkSelected === 1 ? "den ausgewählten Datensatz" : "die ausgewählten Datensätze"
         } wirklich löschen?`;
 
         confirm(msg, deleteSelected);
@@ -275,7 +267,7 @@
         return Promise.all(promises)
             .then(() => {
                 addSuccessToast(
-                    `${totalBulkSelected === 1 ? "Der ausgewählte Eintrag wurde" : "Die ausgewählten Einträge wurden"} erfolgreich gelöscht.`
+                    `${totalBulkSelected === 1 ? "Der ausgewählte Datensatz wurde" : "Die ausgewählten Datensätze wurden"} erfolgreich gelöscht.`
                 );
 
                 dispatch("delete", bulkSelected);
@@ -436,47 +428,8 @@
                                     <CopyIcon value={record.id} />
                                     <div class="txt">{record.id}</div>
                                 </div>
-
-                                {#if isAuth}
-                                    {#if record.verified}
-                                        <i
-                                            class="ri-checkbox-circle-fill txt-sm txt-success"
-                                            use:tooltip={"Verified"}
-                                        />
-                                    {:else}
-                                        <i
-                                            class="ri-error-warning-fill txt-sm txt-hint"
-                                            use:tooltip={"Unverified"}
-                                        />
-                                    {/if}
-                                {/if}
                             </div>
                         </td>
-                    {/if}
-
-                    {#if isAuth}
-                        {#if !hiddenColumns.includes("@username")}
-                            <td class="col-type-text col-field-username">
-                                {#if CommonHelper.isEmpty(record.username)}
-                                    <span class="txt-hint">N/A</span>
-                                {:else}
-                                    <span class="txt txt-ellipsis" title={record.username}>
-                                        {record.username}
-                                    </span>
-                                {/if}
-                            </td>
-                        {/if}
-                        {#if !hiddenColumns.includes("@email")}
-                            <td class="col-type-text col-field-email">
-                                {#if CommonHelper.isEmpty(record.email)}
-                                    <span class="txt-hint">N/A</span>
-                                {:else}
-                                    <span class="txt txt-ellipsis" title={record.email}>
-                                        {record.email}
-                                    </span>
-                                {/if}
-                            </td>
-                        {/if}
                     {/if}
 
                     {#each visibleFields as field (field.name)}
@@ -527,7 +480,7 @@
                                     on:click={() => dispatch("new")}
                                 >
                                     <i class="ri-add-line" />
-                                    <span class="txt">Eintrag erstellen</span>
+                                    <span class="txt">Datensatz erstellen</span>
                                 </button>
                             {/if}
                         </td>
@@ -557,7 +510,7 @@
     <div class="bulkbar" transition:fly={{ duration: 150, y: 5 }}>
         <div class="txt">
             <strong>{totalBulkSelected}</strong>
-            {totalBulkSelected === 1 ? "Eintrag" : "Einträge"} ausgewählt
+            {totalBulkSelected === 1 ? "Datensatz" : "Datensätze"} ausgewählt
         </div>
         <button
             type="button"

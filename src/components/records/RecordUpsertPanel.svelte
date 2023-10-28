@@ -47,8 +47,6 @@
     let isNew = true;
     let isLoading = true;
 
-    $: isAuthCollection = collection?.type === "auth";
-
     $: hasEditorField = !!collection?.schema?.find((f) => f.type === "editor");
 
     $: hasFileChanges =
@@ -94,7 +92,7 @@
                 if (!err.isAbort) {
                     forceHide();
                     console.warn("resolveModel:", err);
-                    addErrorToast(`Unable to load record with id "${model}"`);
+                    addErrorToast(`Der Datensatz mit der id "${model}" kann nicht geladen werden.`);
                 }
             }
 
@@ -237,7 +235,7 @@
                 result = await ApiClient.collection(collection.id).update(record.id, data);
             }
 
-            addSuccessToast(isNew ? "Successfully created record." : "Successfully updated record.");
+            addSuccessToast(isNew ? "Datensatz erstellt." : "Datensatz aktualisiert.");
 
             deleteDraft();
 
@@ -263,12 +261,12 @@
             return; // nothing to delete
         }
 
-        confirm(`Do you really want to delete the selected record?`, () => {
+        confirm(`Sind Sie sicher, dass Sie den Datensatz löschen möchten?`, () => {
             return ApiClient.collection(original.collectionId)
                 .delete(original.id)
                 .then(() => {
                     hide();
-                    addSuccessToast("Successfully deleted record.");
+                    addSuccessToast("Datensatz gelöscht.");
                     dispatch("delete", original);
                 })
                 .catch((err) => {
@@ -286,22 +284,12 @@
         };
 
         const jsonFields = {};
-
         for (const field of collection?.schema || []) {
             exportableFields[field.name] = true;
 
             if (field.type == "json") {
                 jsonFields[field.name] = true;
             }
-        }
-
-        if (isAuthCollection) {
-            exportableFields["username"] = true;
-            exportableFields["email"] = true;
-            exportableFields["emailVisibility"] = true;
-            exportableFields["password"] = true;
-            exportableFields["passwordConfirm"] = true;
-            exportableFields["verified"] = true;
         }
 
         // export base fields
@@ -358,43 +346,10 @@
         return formData;
     }
 
-    function sendVerificationEmail() {
-        if (!collection?.id || !original?.email) {
-            return;
-        }
-
-        confirm(`Do you really want to sent verification email to ${original.email}?`, () => {
-            return ApiClient.collection(collection.id)
-                .requestVerification(original.email)
-                .then(() => {
-                    addSuccessToast(`Successfully sent verification email to ${original.email}.`);
-                })
-                .catch((err) => {
-                    ApiClient.error(err);
-                });
-        });
-    }
-
-    function sendPasswordResetEmail() {
-        if (!collection?.id || !original?.email) {
-            return;
-        }
-
-        confirm(`Do you really want to sent password reset email to ${original.email}?`, () => {
-            return ApiClient.collection(collection.id)
-                .requestPasswordReset(original.email)
-                .then(() => {
-                    addSuccessToast(`Successfully sent password reset email to ${original.email}.`);
-                })
-                .catch((err) => {
-                    ApiClient.error(err);
-                });
-        });
-    }
-
+    
     function duplicateConfirm() {
         if (hasChanges) {
-            confirm("You have unsaved changes. Do you really want to discard them?", () => {
+            confirm("Ungespeicherte Änderungen gehen verloren.\nMöchten Sie die Änderungen wirklich verwerfen?", () => {
                 duplicate();
             });
         } else {
@@ -441,14 +396,13 @@
     class="
         record-panel
         {hasEditorField ? 'overlay-panel-xl' : 'overlay-panel-lg'}
-        {isAuthCollection && !isNew ? 'colored-header' : ''}
     "
     btnClose={!isLoading}
     escClose={!isLoading}
     overlayClose={!isLoading}
     beforeHide={() => {
         if (hasChanges && confirmHide) {
-            confirm("You have unsaved changes. Do you really want to close the panel?", () => {
+            confirm("Ungespeicherte Änderungen gehen verloren.\nEditor trotzdem schließen?", () => {
                 forceHide();
             });
 
@@ -466,11 +420,11 @@
     <svelte:fragment slot="header">
         {#if isLoading}
             <span class="loader loader-sm" />
-            <h4 class="panel-title txt-hint">Loading...</h4>
+            <h4 class="panel-title txt-hint">Lädt...</h4>
         {:else}
             <h4 class="panel-title">
-                {isNew ? "New" : "Edit"}
-                <strong>{collection?.name}</strong> record
+                {isNew ? "Neuer Datensatz in " : "Datensatz in "}
+                <strong>{collection?.name}</strong> {!isNew ? "bearbeiten." : ""}
             </h4>
 
             {#if !isNew}
@@ -482,33 +436,13 @@
                 >
                     <i class="ri-more-line" />
                     <Toggler class="dropdown dropdown-right dropdown-nowrap">
-                        {#if isAuthCollection && !original.verified && original.email}
-                            <button
-                                type="button"
-                                class="dropdown-item closable"
-                                on:click={() => sendVerificationEmail()}
-                            >
-                                <i class="ri-mail-check-line" />
-                                <span class="txt">Send verification email</span>
-                            </button>
-                        {/if}
-                        {#if isAuthCollection && original.email}
-                            <button
-                                type="button"
-                                class="dropdown-item closable"
-                                on:click={() => sendPasswordResetEmail()}
-                            >
-                                <i class="ri-mail-lock-line" />
-                                <span class="txt">Send password reset email</span>
-                            </button>
-                        {/if}
                         <button
                             type="button"
                             class="dropdown-item closable"
                             on:click={() => duplicateConfirm()}
                         >
                             <i class="ri-file-copy-line" />
-                            <span class="txt">Duplicate</span>
+                            <span class="txt">Duplizieren</span>
                         </button>
                         <button
                             type="button"
@@ -516,32 +450,11 @@
                             on:click|preventDefault|stopPropagation={() => deleteConfirm()}
                         >
                             <i class="ri-delete-bin-7-line" />
-                            <span class="txt">Delete</span>
+                            <span class="txt">Löschen</span>
                         </button>
                     </Toggler>
                 </button>
             {/if}
-        {/if}
-
-        {#if isAuthCollection && !isNew}
-            <div class="tabs-header stretched">
-                <button
-                    type="button"
-                    class="tab-item"
-                    class:active={activeTab === tabFormKey}
-                    on:click={() => (activeTab = tabFormKey)}
-                >
-                    Account
-                </button>
-                <button
-                    type="button"
-                    class="tab-item"
-                    class:active={activeTab === tabProviderKey}
-                    on:click={() => (activeTab = tabProviderKey)}
-                >
-                    Authorized providers
-                </button>
-            </div>
         {/if}
     </svelte:fragment>
 
@@ -562,20 +475,20 @@
                             <i class="ri-information-line" />
                         </div>
                         <div class="flex flex-gap-xs">
-                            The record has previous unsaved changes.
+                            Der Datensatz hat ungespeicherte Änderungen.
                             <button
                                 type="button"
                                 class="btn btn-sm btn-secondary"
                                 on:click={() => restoreDraft()}
                             >
-                                Restore draft
+                                Wiederherstellen
                             </button>
                         </div>
                         <button
                             type="button"
                             class="close"
-                            aria-label="Discard draft"
-                            use:tooltip={"Discard draft"}
+                            aria-label="Entwurf verwerfen"
+                            use:tooltip={"Entwurf verwerfen"}
                             on:click|preventDefault={() => deleteDraft()}
                         >
                             <i class="ri-close-line" />
@@ -599,20 +512,12 @@
                 <input
                     type="text"
                     id={uniqueId}
-                    placeholder={!isLoading ? "Leave empty to auto generate..." : ""}
+                    placeholder={!isLoading ? "Wird automatisch gestzt, falls leer..." : ""}
                     minlength="15"
                     readonly={!isNew}
                     bind:value={record.id}
                 />
             </Field>
-
-            {#if isAuthCollection}
-                <AuthFields bind:record {isNew} {collection} />
-
-                {#if collection?.schema?.length}
-                    <hr />
-                {/if}
-            {/if}
 
             {#each collection?.schema || [] as field (field.name)}
                 {#if field.type === "text"}
@@ -647,11 +552,6 @@
             {/each}
         </form>
 
-        {#if isAuthCollection && !isNew}
-            <div class="tab-item" class:active={activeTab === tabProviderKey}>
-                <ExternalAuthsList {record} />
-            </div>
-        {/if}
     </div>
 
     <svelte:fragment slot="footer">
@@ -661,7 +561,7 @@
             disabled={isSaving || isLoading}
             on:click={() => hide()}
         >
-            <span class="txt">Cancel</span>
+            <span class="txt">Abbrechen & Verwerfen</span>
         </button>
 
         <button
@@ -671,7 +571,7 @@
             class:btn-loading={isSaving || isLoading}
             disabled={!canSave || isSaving}
         >
-            <span class="txt">{isNew ? "Create" : "Save changes"}</span>
+            <span class="txt">{isNew ? "Erstellen" : "Speichern"}</span>
         </button>
     </svelte:fragment>
 </OverlayPanel>
