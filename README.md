@@ -1,10 +1,7 @@
-PocketBase Admin dashboard UI
+Musenalm Admin dashboard UI
 ======================================================================
 
-This is the PocketBase Admin dashboard UI (built with Svelte and Vite).
-
-Although it could be used independently, it is mainly intended to be embedded
-as part of a PocketBase app executable (hence the `embed.go` file).
+This is the Musenalm Admin dashboard UI (built with Svelte and Vite).
 
 ## Development
 
