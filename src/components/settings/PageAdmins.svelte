@@ -140,7 +140,7 @@
 
         <Searchbar
             value={filter}
-            placeholder={"Suchbegrif oder -filder wie email ='test@example.com'"}
+            placeholder={"Suchbegriff oder -filter wie email ='test@example.com'"}
             extraAutocompleteKeys={["email"]}
             on:submit={(e) => (filter = e.detail)}
         />

@@ -123,7 +123,7 @@
     >
         <label for={uniqueId}>
             <i class={CommonHelper.getFieldTypeIcon(field.type)} />
-            <span class="txt">{field.name}</span>
+            <span class="txt">{field.friendlyName ?? field.name}</span>
         </label>
 
         <div bind:this={filesListElem} class="list">

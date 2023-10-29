@@ -21,14 +21,14 @@
 </script>
 
 <a
-    href="/collections?collectionId={collection.id}"
+    href="/collections?collectionId={collection.id}&filter="
     class="sidebar-list-item"
     title={collection.name}
     class:active={$activeCollection?.id === collection.id}
     use:link
 >
-    <i class={CommonHelper.getCollectionTypeIcon(collection.type)} />
-    <span class="txt m-r-auto">{collection.name}</span>
+    <i class={collection.icon ?? CommonHelper.getCollectionTypeIcon(collection.type)} />
+    <span class="txt m-r-auto">{collection.friendlyName ?? collection.name}</span>
     <!-- svelte-ignore a11y-no-static-element-interactions -->
     <!-- svelte-ignore a11y-click-events-have-key-events -->
     <span

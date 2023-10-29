@@ -64,7 +64,7 @@
                     }}
                     on:click|preventDefault={() => (record.emailVisibility = !record.emailVisibility)}
                 >
-                    <span class="txt">Public: {record.emailVisibility ? "On" : "Off"}</span>
+                    <span class="txt">Öffentlich: {record.emailVisibility ? "On" : "Off"}</span>
                 </button>
             </div>
             <!-- svelte-ignore a11y-autofocus -->
@@ -83,7 +83,7 @@
         {#if !isNew}
             <Field class="form-field form-field-toggle" name="verified" let:uniqueId>
                 <input type="checkbox" id={uniqueId} bind:checked={changePasswordToggle} />
-                <label for={uniqueId}>Change password</label>
+                <label for={uniqueId}>Passwort ändern</label>
             </Field>
         {/if}
 
@@ -94,7 +94,7 @@
                         <Field class="form-field required" name="password" let:uniqueId>
                             <label for={uniqueId}>
                                 <i class="ri-lock-line" />
-                                <span class="txt">Password</span>
+                                <span class="txt">Passwort</span>
                             </label>
                             <input
                                 type="password"
@@ -112,7 +112,7 @@
                         <Field class="form-field required" name="passwordConfirm" let:uniqueId>
                             <label for={uniqueId}>
                                 <i class="ri-lock-line" />
-                                <span class="txt">Password confirm</span>
+                                <span class="txt">Passwort wiederholen</span>
                             </label>
                             <input
                                 type="password"
@@ -147,7 +147,7 @@
                     );
                 }}
             />
-            <label for={uniqueId}>Verified</label>
+            <label for={uniqueId}>Bestätigter Account</label>
         </Field>
     </div>
 </div>

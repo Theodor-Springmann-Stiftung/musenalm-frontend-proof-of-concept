@@ -1,6 +1,7 @@
 const collections_viewdata = [
     {
         name: "Akteure",
+        icon: "ri-group-line",
         schema: [
             {
                 name: "Organisation",
@@ -22,9 +23,21 @@ const collections_viewdata = [
                 name: "Anmerkung",
             },
         ],
+        crossReferences: [
+            {
+                table: "Baende",
+                fields: [ "Verleger_Drucker", "Herausgeber" ]
+            },
+            {
+                table: "Inhalte",
+                fields: [ "Urheber" ]
+            },
+        ]
     },
     {
         name: "Baende",
+        icon: "ri-book-line",
+        friendlyName: "Bände",
         schema: [
             {
                 name: "Titelangabe",
@@ -34,6 +47,7 @@ const collections_viewdata = [
             },
             {
                 name: "Angaben_zur_Erscheinungsweise",
+                friendlyName: "Angaben zur Erscheinungsweise"
             },
             {
                 name: "Ort",
@@ -90,9 +104,16 @@ const collections_viewdata = [
                 name: "Status",
             },
         ],
+        crossReferences: [
+            {
+                table: "Inhalte",
+                fields: [ "Band" ]
+            }
+        ]
     },
     {
         name: "Inhalte",
+        icon: "ri-file-text-line",
         schema: [
             {
                 name: "Band",
@@ -131,6 +152,7 @@ const collections_viewdata = [
     },
     {
         name: "Reihentitel",
+        icon: "ri-list-check",
         schema: [
             {
                 name: "Titel",
@@ -148,6 +170,12 @@ const collections_viewdata = [
                 name: "Musenalm_NR_ALT",
             },
         ],
+        crossReferences: [
+            {
+                table: "Baende",
+                fields: [ "Uebertragungen_von", "Reihen", "Titelauflage_von" ]
+            }
+        ]
     },
 ];
 export default collections_viewdata;

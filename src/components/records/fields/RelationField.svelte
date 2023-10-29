@@ -136,7 +136,7 @@
 >
     <label for={uniqueId}>
         <i class={CommonHelper.getFieldTypeIcon(field.type)} />
-        <span class="txt">{field.name}</span>
+        <span class="txt">{field.friendlyName ?? field.name}</span>
         {#if invalidIds.length}
             <i
                 class="ri-error-warning-line link-hint m-l-auto flex-order-10"

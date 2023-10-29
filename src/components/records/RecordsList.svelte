@@ -14,12 +14,14 @@
     import FormattedDate from "@/components/base/FormattedDate.svelte";
     import Scroller from "@/components/base/Scroller.svelte";
     import RecordFieldValue from "@/components/records/RecordFieldValue.svelte";
+    import { replace, link } from "svelte-spa-router";
 
     const dispatch = createEventDispatcher();
     const sortRegex = /^([\+\-])?(\w+)$/;
     const perPage = 40;
 
     export let collection;
+    export let crossReferences;
     export let sort = "";
     export let filter = "";
 
@@ -75,12 +77,12 @@
     $: collumnsToHide = [].concat(
         isAuth
             ? [
-                  { id: "@username", name: "username" },
-                  { id: "@email", name: "email" },
-              ]
+                    { id: "@username", name: "username" },
+                    { id: "@email", name: "email" },
+                ]
             : [],
         fields.map((f) => {
-            return { id: f.id, name: f.name };
+            return { id: f.id, name: f.friendlyName ? f.friendlyName : f.name };
         }),
         hasCreated ? { id: "@created", name: "created" } : [],
         hasUpdated ? { id: "@updated", name: "updated" } : []
@@ -346,14 +348,14 @@
                     </th>
                 {/if}
 
-                {#if !hiddenColumns.includes("@id")}
+                <!-- {#if !hiddenColumns.includes("@id")}
                     <SortHeader class="col-type-text col-field-id" name="id" bind:sort>
                         <div class="col-header-content">
                             <i class={CommonHelper.getFieldTypeIcon("primary")} />
                             <span class="txt">id</span>
                         </div>
                     </SortHeader>
-                {/if}
+                {/if} -->
 
                 {#if isAuth}
                     {#if !hiddenColumns.includes("@username")}
@@ -382,7 +384,7 @@
                     >
                         <div class="col-header-content">
                             <i class={CommonHelper.getFieldTypeIcon(field.type)} />
-                            <span class="txt">{field.name}</span>
+                            <span class="txt">{field.friendlyName ?? field.name}</span>
                         </div>
                     </SortHeader>
                 {/each}
@@ -412,6 +414,7 @@
                             type="button"
                             aria-label="Spalten ein-/ausblenden"
                             class="btn btn-sm btn-transparent p-0"
+                            use:tooltip={"Spalten ein-/ausblenden"}
                         >
                             <i class="ri-more-line" />
                         </button>
@@ -424,13 +427,6 @@
                 <tr
                     tabindex="0"
                     class="row-handle"
-                    on:click={() => dispatch("select", record)}
-                    on:keydown={(e) => {
-                        if (e.code === "Enter") {
-                            e.preventDefault();
-                            dispatch("select", record);
-                        }
-                    }}
                 >
                     {#if !isView}
                         <td class="bulk-select-col min-width">
@@ -448,7 +444,7 @@
                         </td>
                     {/if}
 
-                    {#if !hiddenColumns.includes("@id")}
+                    <!-- {#if !hiddenColumns.includes("@id")}
                         <td class="col-type-text col-field-id">
                             <div class="flex flex-gap-5">
                                 <div class="label">
@@ -460,18 +456,18 @@
                                     {#if record.verified}
                                         <i
                                             class="ri-checkbox-circle-fill txt-sm txt-success"
-                                            use:tooltip={"Verified"}
+                                            use:tooltip={"Bestätigt"}
                                         />
                                     {:else}
                                         <i
                                             class="ri-error-warning-fill txt-sm txt-hint"
-                                            use:tooltip={"Unverified"}
+                                            use:tooltip={"Undbestätigt"}
                                         />
                                     {/if}
                                 {/if}
                             </div>
                         </td>
-                    {/if}
+                    {/if} -->
 
                     {#if isAuth}
                         {#if !hiddenColumns.includes("@username")}
@@ -515,10 +511,46 @@
                             <FormattedDate date={record.updated} />
                         </td>
                     {/if}
-
+                    
                     <td class="col-type-action min-width">
-                        <i class="ri-arrow-right-line" />
+                        <div class="col-actions">
+                            <button
+                                type="button"
+                                aria-label="Eintrag bearbeiten"
+                                use:tooltip={"bearbeiten"}
+                                class="btn btn-sm btn-transparent p-0"
+                                on:click={() => dispatch("select", record)}
+                                on:keydown={(e) => {
+                                    if (e.code === "Enter") {
+                                        e.preventDefault();
+                                        dispatch("select", record);
+                                    }
+                                }}>
+                                <i 
+                                    class="ri-pencil-fill"
+                                    use:tooltip={"Bearbeiten"}
+                                />
+                            </button>
+                            
+                            {#if crossReferences && crossReferences.length}
+                            {#each crossReferences as cr}
+                            <a
+                                type="button"
+                                aria-label="verküpfte {cr.friendlyName ?? cr.table}"
+                                use:tooltip={(cr.friendlyName ?? cr.table)}
+                                class="btn btn-sm btn-transparent p-0"
+                                href="/collections?collectionId={cr.id}&filter={CommonHelper.createFilterLink(record.id, cr.fields)}"
+                                use:link
+                            >
+                                <i class="{cr.icon}"/>
+                            </a>
+                            {/each}
+                            {/if}
+                            
+                        </div>
                     </td>
+                    
+                    
                 </tr>
             {:else}
                 {#if isLoading}
@@ -562,6 +594,7 @@
                             disabled={isLoading}
                             class:btn-loading={isLoading}
                             on:click|preventDefault={() => load(currentPage + 1)}
+
                         >
                             <span class="txt">Mehr Einträge laden</span>
                         </button>

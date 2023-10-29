@@ -74,6 +74,16 @@
                     <i class="ri-database-2-line" />
                 </a>
                 <a
+                    href="/texts"
+                    class="menu-item"
+                    aria-label="Texte & Bilder"
+                    use:link
+                    use:active={{ path: "/texts/?.*", className: "current-route" }}
+                    use:tooltip={{ text: "Texte & Bilder", position: "right" }}
+                >
+                    <i class="ri-pages-line" />
+                </a>
+                <a
                     href="/settings"
                     class="menu-item"
                     aria-label="Einstellungen"
@@ -81,13 +91,13 @@
                     use:active={{ path: "/settings/?.*", className: "current-route" }}
                     use:tooltip={{ text: "Einstellungen", position: "right" }}
                 >
-                    <i class="ri-tools-line" />
+                    <i class="ri-settings-3-line" />
                 </a>
             </nav>
 
             <figure class="thumb thumb-circle link-hint closable">
                 <img
-                    src="{import.meta.env.BASE_URL}images/avatars/avatar{$admin?.avatar || 0}.svg"
+                    src="{import.meta.env.BASE_URL}images/avatars/avatar{$admin?.avatar || 3}.svg"
                     alt="Avatar"
                 />
                 <Toggler class="dropdown dropdown-nowrap dropdown-upside dropdown-left">

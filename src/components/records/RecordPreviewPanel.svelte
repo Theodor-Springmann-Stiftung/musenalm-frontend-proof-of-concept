@@ -79,7 +79,7 @@
 
             {#each collection?.schema as field}
                 <tr>
-                    <td class="min-width txt-hint txt-bold">{field.name}</td>
+                    <td class="min-width txt-hint txt-bold">{field.friendlyName ?? field.name}</td>
                     <td class="col-field">
                         <RecordFieldValue {field} {record} />
                     </td>

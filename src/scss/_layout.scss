@@ -29,7 +29,7 @@
         color: inherit;
         min-width: var(--menuItemSize);
         min-height: var(--menuItemSize);
-        border: 2px solid transparent;
+        border: 1px solid transparent;
         border-radius: var(--lgRadius);
         transition: background var(--baseAnimationSpeed),
                     border var(--baseAnimationSpeed);
@@ -45,6 +45,7 @@
         &.current-route {
             background: var(--baseColor);
             border-color: var(--primaryColor);
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
         }
     }
 }

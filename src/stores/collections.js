@@ -8,6 +8,7 @@ export const collections                    = writable([]);
 export const activeCollection               = writable({});
 export const isCollectionsLoading           = writable(false);
 export const protectedFilesCollectionsCache = writable({});
+export const crossReferences                = writable([]);
 
 export function changeActiveCollectionById(collectionId) {
     collections.update((list) => {
@@ -15,8 +16,10 @@ export function changeActiveCollectionById(collectionId) {
 
         if (found) {
             activeCollection.set(found);
+            crossReferences.set(CommonHelper.enrichCrossReferences(found.name, list));
         } else if (list.length) {
             activeCollection.set(list[0]);
+            crossReferences.set(CommonHelper.enrichCrossReferences(list[0].name, list));
         }
 
         return list;
@@ -42,8 +45,10 @@ export async function loadCollections(activeId = null) {
         const item = activeId && CommonHelper.findByKey(items, "id", activeId);
         if (item) {
             activeCollection.set(item);
+            crossReferences.set(CommonHelper.enrichCrossReferences(item.name, items));
         } else if (items.length) {
             activeCollection.set(items[0]);
+            crossReferences.set(CommonHelper.enrichCrossReferences(items[0].name, items));
         }
 
         refreshProtectedFilesCollectionsCache();

@@ -20,7 +20,7 @@
 <Field class="form-field {field.required ? 'required' : ''}" name={field.name} let:uniqueId>
     <label for={uniqueId}>
         <i class={CommonHelper.getFieldTypeIcon(field.type)} />
-        <span class="txt">{field.name}</span>
+        <span class="txt">{field.friendlyName ?? field.name}</span>
     </label>
     <Select
         id={uniqueId}

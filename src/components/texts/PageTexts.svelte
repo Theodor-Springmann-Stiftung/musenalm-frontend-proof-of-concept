@@ -1,113 +1,71 @@
 <script>
     import { tick } from "svelte";
-    import { querystring, replace } from "svelte-spa-router";
+    import { replace, querystring } from "svelte-spa-router";
+    import PocketBase from "@/utils/ApiClient";
     import CommonHelper from "@/utils/CommonHelper";
     import {
         collections,
         activeCollection,
         isCollectionsLoading,
         loadCollections,
-        changeActiveCollectionById,
-        crossReferences
+        setActiveCollectionByObject,
     } from "@/stores/collections";
+    import collection_texts from "@/collection_texts";
     import { pageTitle } from "@/stores/app";
     import PageWrapper from "@/components/base/PageWrapper.svelte";
     import Searchbar from "@/components/base/Searchbar.svelte";
     import RefreshButton from "@/components/base/RefreshButton.svelte";
-    import CollectionsSidebar from "@/components/collections/CollectionsSidebar.svelte";
     import RecordUpsertPanel from "@/components/records/RecordUpsertPanel.svelte";
     import RecordPreviewPanel from "@/components/records/RecordPreviewPanel.svelte";
     import RecordsList from "@/components/records/RecordsList.svelte";
     import RecordsCount from "@/components/records/RecordsCount.svelte";
 
-    const initialQueryParams = new URLSearchParams($querystring);
+    $pageTitle = "Texte";
 
+    const queryParams = new URLSearchParams($querystring);
+
+    let collectionSchema = collection_texts;
+    let admins = [];
+    let isLoading = false;
+    let recordsCount;
+    let recordsList;
+    let totalCount = 0;
     let recordUpsertPanel;
     let recordPreviewPanel;
-    let recordsList;
-    let recordsCount;
-    let searchBar;
-    let filter = initialQueryParams.get("filter") || "";
-    let sort = initialQueryParams.get("sort") || "-created";
-    let selectedCollectionId = initialQueryParams.get("collectionId") || $activeCollection?.id;
-    let totalCount = 0; // used to manully change the count without the need of reloading the recordsCount component
+    let filter = queryParams.get("filter") || "";
+    let sort = queryParams.get("sort") || "-created";
 
-    loadCollections(selectedCollectionId);
+    $: if (sort !== -1 && filter !== -1) {
+        // keep listing params in sync
+        const query = new URLSearchParams({ filter, sort }).toString();
+        replace("/texts?" + query);
 
-    $: reactiveParams = new URLSearchParams($querystring);
-
-    $: if (
-        !$isCollectionsLoading &&
-        reactiveParams.get("collectionId") &&
-        reactiveParams.get("collectionId") != selectedCollectionId
-    ) {
-        changeActiveCollectionById(reactiveParams.get("collectionId"));
-        filter = reactiveParams.get("filter") || "";
+        loadTexts();
     }
 
-    // reset filter and sort on collection change
-    $: if ($activeCollection?.id && selectedCollectionId != $activeCollection.id) {
-        reset();
-    }
+    export function loadTexts() {
+        isLoading = true;
+        admins = []; // reset
 
-    $: if ($activeCollection?.id) {
-        normalizeSort();
-    }
+        const normalizedFilter = CommonHelper.normalizeSearchFilter(filter);
 
-    $: if (!$isCollectionsLoading && initialQueryParams.get("recordId")) {
-        showRecordById(initialQueryParams.get("recordId"));
-    }
-
-    // keep the url params in sync
-    $: if (!$isCollectionsLoading && (sort || filter || $activeCollection?.id)) {
-        updateQueryParams();
-    }
-
-    $: $pageTitle = $activeCollection?.name || "Collections";
-
-    async function showRecordById(recordId) {
-        await tick(); // ensure that the reactive component params are resolved
-
-        $activeCollection?.type === "view"
-            ? recordPreviewPanel.show(recordId)
-            : recordUpsertPanel?.show(recordId);
-    }
-
-    function reset() {
-        selectedCollectionId = $activeCollection?.id;
-        //filter = "";
-        sort = "-created";
-
-        updateQueryParams({ recordId: null });
-
-        normalizeSort();
-
-        // if (searchBar) searchBar.clear();
-    }
-
-    // ensures that the sort fields exist in the collection
-    async function normalizeSort() {
-        if (!sort) {
-            return; // nothing to normalize
-        }
-
-        const collectionFields = CommonHelper.getAllCollectionIdentifiers($activeCollection);
-
-        const sortFields = sort.split(",").map((f) => {
-            if (f.startsWith("+") || f.startsWith("-")) {
-                return f.substring(1);
-            }
-            return f;
-        });
-
-        // invalid sort expression or missing sort field
-        if (sortFields.filter((f) => collectionFields.includes(f)).length != sortFields.length) {
-            if (collectionFields.includes("created")) {
-                sort = "-created";
-            } else {
-                sort = "";
-            }
-        }
+        return PocketBase.collection('texts')
+            .getFullList(100, {
+                sort: sort || "-created",
+                filter: normalizedFilter,
+            })
+            .then((result) => {
+                admins = result;
+                isLoading = false;
+            })
+            .catch((err) => {
+                if (!err?.isAbort) {
+                    isLoading = false;
+                    console.warn(err);
+                    clearList();
+                    ApiClient.error(err, err?.status != 400); // silence filter errors
+                }
+            });
     }
 
     function updateQueryParams(extra = {}) {
@@ -122,69 +80,70 @@
 
         CommonHelper.replaceHashQueryParams(queryParams);
     }
+
+    function clearList() {
+        admins = [];
+    }
 </script>
 
-{#if $isCollectionsLoading && !$collections.length}
+{#if isLoading}
     <PageWrapper center>
         <div class="placeholder-section m-b-base">
             <span class="loader loader-lg" />
-            <h1>Loading collections...</h1>
+            <h1>Benutzer werden geladen... </h1>
         </div>
     </PageWrapper>
-{:else if !$collections.length}
+<!-- {:else if !admins.length}
     <PageWrapper center>
         <div class="placeholder-section m-b-base">
             <div class="icon">
                 <i class="ri-database-2-line" />
             </div>
-            <h1 class="m-b-10">Keine Sammlungen gefunden.</h1>
+            <h1 class="m-b-10">Sie haben keinen Zugriff auf die Benutzer-Tabelle.</h1>
         </div>
-    </PageWrapper>
+    </PageWrapper> -->
 {:else}
-    <CollectionsSidebar />
 
     <PageWrapper class="flex-content">
         <header class="page-header">
             <nav class="breadcrumbs">
-                <div class="breadcrumb-item">Sammlungen</div>
-                <div class="breadcrumb-item">{$activeCollection.name}</div>
+                <div class="breadcrumb-item">Webseite</div>
+                <div class="breadcrumb-item">Texte & Bilder</div>
             </nav>
 
             <div class="inline-flex gap-5">
                 <RefreshButton
                     on:refresh={() => {
-                        recordsList?.load();
+                        loadTexts();
                         recordsCount?.reload();
                     }}
                 />
             </div>
 
             <div class="btns-group">
-
-                {#if $activeCollection.type !== "view"}
+                {#if collectionSchema.type !== "view"}
                     <button type="button" class="btn btn-expanded" on:click={() => recordUpsertPanel?.show()}>
                         <i class="ri-add-line" />
-                        <span class="txt">Datensatz erstellen</span>
+                        <span class="txt">Text hinzufügen</span>
                     </button>
                 {/if}
             </div>
         </header>
 
         <Searchbar
-            bind:this={searchBar}
             value={filter}
-            autocompleteCollection={$activeCollection}
+            placeholder={"Suchbegriff oder -filter"}
+            extraAutocompleteKeys={["email"]}
             on:submit={(e) => (filter = e.detail)}
         />
 
         <div class="clearfix m-b-sm" />
 
         <RecordsList
-            bind:this={recordsList}
-            collection={$activeCollection}
+            bind:this={admins}
+            collection={collectionSchema}
             bind:filter
             bind:sort
-            crossReferences={$crossReferences}
             on:select={(e) => {
                 updateQueryParams({
                     recordId: e.detail.id,
@@ -192,7 +151,7 @@
 
                 let showModel = e.detail._partial ? e.detail.id : e.detail;
 
-                $activeCollection.type === "view"
+                collectionSchema.type === "view"
                     ? recordPreviewPanel?.show(showModel)
                     : recordUpsertPanel?.show(showModel);
             }}
@@ -206,7 +165,7 @@
             <RecordsCount
                 bind:this={recordsCount}
                 class="m-r-auto txt-sm txt-hint"
-                collection={$activeCollection}
+                collection={collectionSchema}
                 {filter}
                 bind:totalCount
             />
@@ -216,7 +175,7 @@
 
 <RecordUpsertPanel
     bind:this={recordUpsertPanel}
-    collection={$activeCollection}
+    collection={collectionSchema}
     on:hide={() => {
         updateQueryParams({ recordId: null });
     }}
@@ -242,7 +201,7 @@
 
 <RecordPreviewPanel
     bind:this={recordPreviewPanel}
-    collection={$activeCollection}
+    collection={collectionSchema}
     on:hide={() => {
         updateQueryParams({ recordId: null });
     }}

@@ -20,6 +20,5 @@ npm run build
 
 
 ## ToDo
-- Cross reference collections via icon/usercollectiondata
-- Don't do admin login -- do user login
-- Icons for collections
+- Data Transfer
+- Hide user roles

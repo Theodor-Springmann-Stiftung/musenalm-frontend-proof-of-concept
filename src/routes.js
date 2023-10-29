@@ -6,6 +6,7 @@ import PageRecords           from "@/components/records/PageRecords.svelte";
 import PageAdminLogin        from "@/components/admins/PageAdminLogin.svelte";
 import PageApplication       from "@/components/settings/PageApplication.svelte";
 import PageAdmins            from "@/components/settings/PageAdmins.svelte";
+import PageTexts             from "@/components/texts/PageTexts.svelte";
 
 const baseConditions = [
     async (details) => {
@@ -40,6 +41,12 @@ const routes = {
 
     "/collections": wrap({
         component:  PageRecords,
+        conditions: baseConditions.concat([(_) => ApiClient.authStore.isValid]),
+        userData: { showAppSidebar: true },
+    }),
+
+    "/texts": wrap({
+        component:  PageTexts,
         conditions: baseConditions.concat([(_) => ApiClient.authStore.isValid]),
         userData: { showAppSidebar: true },
     }),

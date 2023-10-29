@@ -412,7 +412,7 @@ const collections_user = [
 		{
 			"id": "kxl83xbh14a59ph",
 			"created": "2023-10-28 11:32:56.420Z",
-			"updated": "2023-10-29 00:24:26.834Z",
+			"updated": "2023-10-29 15:59:06.716Z",
 			"name": "Inhalte",
 			"type": "base",
 			"system": false,
@@ -533,6 +533,22 @@ const collections_user = [
 							"7. Römische Zählung",
 							"8. Römische Zählung"
 						]
+					}
+				},
+				{
+					"system": false,
+					"id": "y4cfc1jn",
+					"name": "Urheber",
+					"type": "relation",
+					"required": false,
+					"presentable": false,
+					"unique": false,
+					"options": {
+						"collectionId": "2mz6vzntsdaxky0",
+						"cascadeDelete": false,
+						"minSelect": null,
+						"maxSelect": null,
+						"displayFields": null
 					}
 				},
 				{
@@ -717,6 +733,6 @@ const collections_user = [
 			"deleteRule": "@request.auth.id != \"\"",
 			"options": {}
 		}
-	]
+	];
 
 export default collections_user;

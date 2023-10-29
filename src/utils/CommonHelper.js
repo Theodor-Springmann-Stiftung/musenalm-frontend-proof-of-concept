@@ -766,7 +766,7 @@ export default class CommonHelper {
      * @param  {String}      [format] The result format (see https://moment.github.io/luxon/#/parsing?id=table-of-tokens)
      * @return {String}
      */
-    static formatToLocalDate(date, format = "yyyy-MM-dd HH:mm:ss") {
+    static formatToLocalDate(date, format = "dd.MM.yyyy HH:mm:ss") {
         return CommonHelper.getDateTime(date).toLocal().toFormat(format);
     }
 
@@ -1328,6 +1328,63 @@ export default class CommonHelper {
         return nc;
     }
 
+    /**
+     * Merges two collection arrays to enrich collection data.
+     *
+     * @param  {String} activeCollection
+     * @param  {Array} collections
+     * @return {Array}
+     */
+    static enrichCrossReferences(activeCollection, collections = []) {
+        const nc = [];
+        if (!collections.length) { return nc; }
+        const ac = collections.filter((x) => x.name === activeCollection);
+        if (!ac || !ac.length) { return nc; }
+        const crs = ac[0].crossReferences;
+        if (crs && crs.length) {
+            nc.push(...crs);
+            for (let cr of nc) {
+                const c = collections.filter((x) => x.name === cr.table);
+                if (c && c.length) {
+                    cr.icon = c[0].icon;
+                    if (c[0].friendlyName) {
+                        cr.friendlyName = c[0].friendlyName;
+                    }
+                    cr.id = c[0].id;
+                }
+            }
+        }
+        return nc;
+    }
+
+    /**
+     * Merges two collection arrays to enrich collection data.
+     *
+     * @param  {String} id
+     * @param  {Array} list
+     * @return {String}
+     */
+    static createFilterLink(id, list) {
+        if (!list || !list.length) return "";
+        let res = "";
+        let first = true;
+        for (const s of list) {
+            if (first) {
+                res += s;
+                res += "~\"";
+                res += id;
+                res += "\"";
+                first = false;
+            } else {
+                res += "||";
+                res += s;
+                res += "~\"";
+                res += id;
+                res += "\"";
+            }
+        }
+        return res;
+    }
 
 
     /**
@@ -1930,6 +1987,16 @@ export default class CommonHelper {
         searchTerm = searchTerm.replace(/ENTHÄLT/, "~");
         searchTerm = searchTerm.replace(/WAHR/, "true");
         searchTerm = searchTerm.replace(/FALSCH/, "false");
+
+        searchTerm = searchTerm.replace(/ERSTELLT/, "created");
+        searchTerm = searchTerm.replace(/BEARBEITET/, "updated");
+
+        // searchTerm = searchTerm.replace(/@heute/, "@day");
+        // searchTerm = searchTerm.replace(/@diesenmonat/, "@month");
+        // searchTerm = searchTerm.replace(/@diesesjahr/, "@year");
+        // searchTerm = searchTerm.replace(/@gestern/, "@day");
+        // searchTerm = searchTerm.replace(/@diesewoche/, "@week");
+        
 
         const opChars = ["=", "!=", "~", "!~", ">", ">=", "<", "<="];
 
