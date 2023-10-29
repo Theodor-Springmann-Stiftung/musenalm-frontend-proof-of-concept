@@ -1,7 +1,8 @@
 import { writable } from "svelte/store";
 import ApiClient    from "@/utils/ApiClient";
 import CommonHelper from "@/utils/CommonHelper";
-import collectionsuserdata from "@/collections_userdata";
+import collections_user from "@/collections_user";
+import collections_viewdata from "@/collections_viewdata";
 
 export const collections                    = writable([]);
 export const activeCollection               = writable({});
@@ -22,36 +23,10 @@ export function changeActiveCollectionById(collectionId) {
     });
 }
 
-// add or update collection
-export function addCollection(collection) {
-    activeCollection.update((current) => {
-        return CommonHelper.isEmpty(current?.id) || current.id === collection.id ? collection : current;
-    });
-
-    collections.update((list) => {
-        CommonHelper.pushOrReplaceByKey(list, collection, "id");
-
-        refreshProtectedFilesCollectionsCache();
-
-        return CommonHelper.sortCollections(list);
-    });
-}
-
-export function removeCollection(collection) {
-    collections.update((list) => {
-        CommonHelper.removeByKey(list, "id", collection.id);
-
-        activeCollection.update((current) => {
-            if (current.id === collection.id) {
-                return list[0];
-            }
-            return current;
-        });
-
-        refreshProtectedFilesCollectionsCache();
-
-        return list;
-    });
+export function setActiveCollectionByObject(collectionObject) {
+    if (collectionObject) {
+        activeCollection.set(collectionObject);
+    }
 }
 
 // load all collections (excluding the user profile)
@@ -59,16 +34,9 @@ export async function loadCollections(activeId = null) {
     isCollectionsLoading.set(true);
 
     try {
-        let items = await ApiClient.collections.getFullList(200, {
-            "sort": "+name",
-        })
-
+        let items = collections_user;
         items = CommonHelper.sortCollections(items);
-
-        items = CommonHelper.mergeCollection(items, collectionsuserdata);
-
-        console.log(items);
-
+        items = CommonHelper.mergeCollection(items, collections_viewdata);
         collections.set(items);
 
         const item = activeId && CommonHelper.findByKey(items, "id", activeId);

@@ -1,4 +1,4 @@
-export default collections = [
+const collections_user = [
 		{
 			"id": "2mz6vzntsdaxky0",
 			"created": "2023-10-28 11:16:16.953Z",
@@ -718,3 +718,5 @@ export default collections = [
 			"options": {}
 		}
 	]
+
+export default collections_user;

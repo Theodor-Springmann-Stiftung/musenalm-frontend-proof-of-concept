@@ -10,7 +10,7 @@
     import Toasts from "@/components/base/Toasts.svelte";
     import Toggler from "@/components/base/Toggler.svelte";
     import Confirmation from "@/components/base/Confirmation.svelte";
-    import { pageTitle, appName, hideControls } from "@/stores/app";
+    import { pageTitle, appName } from "@/stores/app";
     import { admin } from "@/stores/admin";
     import { setErrors } from "@/stores/errors";
     import { resetConfirmation } from "@/stores/confirmation";
@@ -21,10 +21,6 @@
     let showAppSidebar = false;
 
     let isTinyMCEPreloaded = false;
-
-    $: if ($admin?.id) {
-        loadSettings();
-    }
 
     function handleRouteLoading(e) {
         if (e?.detail?.location === oldLocation) {
@@ -43,24 +39,6 @@
 
     function handleRouteFailure() {
         replace("/");
-    }
-
-    async function loadSettings() {
-        if (!$admin?.id) {
-            return;
-        }
-
-        try {
-            const settings = await ApiClient.settings.getAll({
-                $cancelKey: "initialAppSettings",
-            });
-            $appName = settings?.meta?.appName || "";
-            $hideControls = !!settings?.meta?.hideControls;
-        } catch (err) {
-            if (!err?.isAbort) {
-                console.warn("Failed to load app settings.", err);
-            }
-        }
     }
 
     function logout() {
@@ -94,16 +72,6 @@
                     use:tooltip={{ text: "Sammlungen", position: "right" }}
                 >
                     <i class="ri-database-2-line" />
-                </a>
-                <a
-                    href="/logs"
-                    class="menu-item"
-                    aria-label="Logs"
-                    use:link
-                    use:active={{ path: "/logs/?.*", className: "current-route" }}
-                    use:tooltip={{ text: "Logs", position: "right" }}
-                >
-                    <i class="ri-line-chart-line" />
                 </a>
                 <a
                     href="/settings"

@@ -16,7 +16,7 @@
 
         isLoading = true;
 
-        return PocketBase.admins
+        return PocketBase.collection('users')
             .authWithPassword(email, password)
             .then(() => {
                 removeAllToasts();

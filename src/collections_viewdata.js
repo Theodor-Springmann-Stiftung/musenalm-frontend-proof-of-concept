@@ -1,4 +1,4 @@
-const collectionsuserdata = [
+const collections_viewdata = [
     {
         name: "Akteure",
         schema: [
@@ -150,4 +150,4 @@ const collectionsuserdata = [
         ],
     },
 ];
-export default collectionsuserdata;
+export default collections_viewdata;

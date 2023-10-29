@@ -1321,7 +1321,6 @@ export default class CommonHelper {
                         n[0].schema[ns] = {...s, ...n[0].schema[ns]};
                     }
                 }
-                console.log(n[0]);
                 nc.push({...collection,...n[0]});
             }
         }

@@ -1,6 +1,7 @@
 <script>
     import { link } from "svelte-spa-router";
     import active from "svelte-spa-router/active";
+    import { admin } from "@/stores/admin";
     import PageSidebar from "@/components/base/PageSidebar.svelte";
 </script>
 
@@ -18,7 +19,7 @@
             use:link
         >
             <i class="ri-shield-user-line" />
-            <span class="txt">Admins</span>
+            <span class="txt">Accounts</span>
         </a>
     </div>
 </PageSidebar>

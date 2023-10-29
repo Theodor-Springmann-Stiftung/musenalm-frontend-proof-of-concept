@@ -1,7 +1,7 @@
 <script>
     import ApiClient from "@/utils/ApiClient";
     import CommonHelper from "@/utils/CommonHelper";
-    import { pageTitle, appName, hideControls } from "@/stores/app";
+    import { pageTitle, appName } from "@/stores/app";
     import { addSuccessToast } from "@/stores/toasts";
     import tooltip from "@/actions/tooltip";
     import PageWrapper from "@/components/base/PageWrapper.svelte";
@@ -20,17 +20,15 @@
 
     $: hasChanges = initialHash != JSON.stringify(formSettings);
 
-    loadSettings();
-
     async function loadSettings() {
         isLoading = true;
 
-        try {
-            const settings = (await ApiClient.settings.getAll()) || {};
-            init(settings);
-        } catch (err) {
-            ApiClient.error(err);
-        }
+        // try {
+        //     const settings = (await ApiClient.settings.getAll()) || {};
+        //     init(settings);
+        // } catch (err) {
+        //     ApiClient.error(err);
+        // }
 
         isLoading = false;
     }
@@ -42,25 +40,25 @@
 
         isSaving = true;
 
-        try {
-            const settings = await ApiClient.settings.update(CommonHelper.filterRedactedProps(formSettings));
-            init(settings);
-            addSuccessToast("Successfully saved application settings.");
-        } catch (err) {
-            ApiClient.error(err);
-        }
+        // try {
+        //     const settings = await ApiClient.settings.update(CommonHelper.filterRedactedProps(formSettings));
+        //     init(settings);
+        //     addSuccessToast("Successfully saved application settings.");
+        // } catch (err) {
+        //     ApiClient.error(err);
+        // }
 
         isSaving = false;
     }
 
     function init(settings = {}) {
-        $appName = settings?.meta?.appName;
-        $hideControls = !!settings?.meta?.hideControls;
+        // $appName = settings?.meta?.appName;
+        // $hideControls = !!settings?.meta?.hideControls;
 
-        formSettings = {
-            meta: settings?.meta || {},
-            logs: settings?.logs || {},
-        };
+        // formSettings = {
+        //     meta: settings?.meta || {},
+        //     logs: settings?.logs || {},
+        // };
 
         originalFormSettings = JSON.parse(JSON.stringify(formSettings));
     }
@@ -86,6 +84,7 @@
                 <div class="loader" />
             {:else}
                 <div class="grid">
+                     <!--
                     <div class="col-lg-6">
                         <Field class="form-field required" name="meta.appName" let:uniqueId>
                             <label for={uniqueId}>Application name</label>
@@ -110,8 +109,8 @@
                         <input type="number" id={uniqueId} required bind:value={formSettings.logs.maxDays} />
                     </Field>
 
-                    <Field class="form-field form-field-toggle" name="meta.hideControls" let:uniqueId>
-                        <input type="checkbox" id={uniqueId} bind:checked={formSettings.meta.hideControls} />
+                    <Field class="form-field form-field-toggle" name="meta" let:uniqueId>
+                        <input type="checkbox" id={uniqueId} bind:checked={formSettings.} />
                         <label for={uniqueId}>
                             <span class="txt">Hide collection create and edit controls</span>
                             <i
@@ -122,7 +121,7 @@
                                 }}
                             />
                         </label>
-                    </Field>
+                    </Field> -->
 
                     <div class="col-lg-12 flex">
                         <div class="flex-fill" />

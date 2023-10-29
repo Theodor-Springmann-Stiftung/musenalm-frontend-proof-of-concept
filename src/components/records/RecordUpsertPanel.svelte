@@ -12,6 +12,7 @@
     import Toggler from "@/components/base/Toggler.svelte";
     import ModelDateIcon from "@/components/base/ModelDateIcon.svelte";
     import OverlayPanel from "@/components/base/OverlayPanel.svelte";
+    import AuthFields from "@/components/records/fields/AuthFields.svelte";
     import TextField from "@/components/records/fields/TextField.svelte";
     import NumberField from "@/components/records/fields/NumberField.svelte";
     import BoolField from "@/components/records/fields/BoolField.svelte";
@@ -44,6 +45,8 @@
     let activeTab = tabFormKey;
     let isNew = true;
     let isLoading = true;
+
+    $: isAuthCollection = collection?.type === "auth";
 
     $: hasEditorField = !!collection?.schema?.find((f) => f.type === "editor");
 
@@ -290,6 +293,15 @@
             }
         }
 
+        if (isAuthCollection) {
+            exportableFields["username"] = true;
+            exportableFields["email"] = true;
+            exportableFields["emailVisibility"] = true;
+            exportableFields["password"] = true;
+            exportableFields["passwordConfirm"] = true;
+            exportableFields["verified"] = true;
+        }
+    
         // export base fields
         for (const key in data) {
             // skip non-schema fields
@@ -387,6 +399,41 @@
             save(false);
         }
     }
+
+    function sendVerificationEmail() {
+        if (!collection?.id || !original?.email) {
+            return;
+        }
+
+        confirm(`Do you really want to sent verification email to ${original.email}?`, () => {
+            return ApiClient.collection(collection.id)
+                .requestVerification(original.email)
+                .then(() => {
+                    addSuccessToast(`Successfully sent verification email to ${original.email}.`);
+                })
+                .catch((err) => {
+                    ApiClient.error(err);
+                });
+        });
+    }
+
+    function sendPasswordResetEmail() {
+        if (!collection?.id || !original?.email) {
+            return;
+        }
+
+        confirm(`Do you really want to sent password reset email to ${original.email}?`, () => {
+            return ApiClient.collection(collection.id)
+                .requestPasswordReset(original.email)
+                .then(() => {
+                    addSuccessToast(`Successfully sent password reset email to ${original.email}.`);
+                })
+                .catch((err) => {
+                    ApiClient.error(err);
+                });
+        });
+    }
+    
 </script>
 
 <OverlayPanel
@@ -394,6 +441,7 @@
     class="
         record-panel
         {hasEditorField ? 'overlay-panel-xl' : 'overlay-panel-lg'}
+        {isAuthCollection && !isNew ? 'colored-header' : ''}
     "
     btnClose={!isLoading}
     escClose={!isLoading}
@@ -434,6 +482,27 @@
                 >
                     <i class="ri-more-line" />
                     <Toggler class="dropdown dropdown-right dropdown-nowrap">
+                        {#if isAuthCollection && !original.verified && original.email}
+                            <button
+                                type="button"
+                                class="dropdown-item closable"
+                                on:click={() => sendVerificationEmail()}
+                            >
+                                <i class="ri-mail-check-line" />
+                                <span class="txt">Send verification email</span>
+                            </button>
+                        {/if}
+                        {#if isAuthCollection && original.email}
+                            <button
+                                type="button"
+                                class="dropdown-item closable"
+                                on:click={() => sendPasswordResetEmail()}
+                            >
+                                <i class="ri-mail-lock-line" />
+                                <span class="txt">Send password reset email</span>
+                            </button>
+                        {/if}
+
                         <button
                             type="button"
                             class="dropdown-item closable"
@@ -516,6 +585,14 @@
                     bind:value={record.id}
                 />
             </Field>
+
+            {#if isAuthCollection}
+                <AuthFields bind:record {isNew} {collection} />
+
+                {#if collection?.schema?.length}
+                    <hr />
+                {/if}
+            {/if}
 
             {#each collection?.schema || [] as field (field.name)}
                 {#if field.type === "text"}

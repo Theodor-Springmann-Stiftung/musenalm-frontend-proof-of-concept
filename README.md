@@ -17,3 +17,9 @@ npm run dev
 # or generate production ready bundle in dist/ directory
 npm run build
 ```
+
+
+## ToDo
+- Cross reference collections via icon/usercollectiondata
+- Don't do admin login -- do user login
+- Icons for collections

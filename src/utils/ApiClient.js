@@ -105,8 +105,7 @@ class AppAuthStore extends LocalAuthStore {
      */
     save(token, model) {
         super.save(token, model);
-
-        if (model && !model.collectionId) { // not an auth record
+        if (model && model.collectionName === "users") { // not an auth record
             setAdmin(model);
         }
     }
@@ -116,7 +115,6 @@ class AppAuthStore extends LocalAuthStore {
      */
     clear() {
         super.clear();
-
         setAdmin(null);
     }
 }
@@ -126,7 +124,7 @@ const pb = new PocketBase(
     new AppAuthStore("pb_admin_auth")
 );
 
-if (pb.authStore.model && !pb.authStore.model.collectionId) { // not an auth record
+if (pb.authStore.model && pb.authStore.model.collectionName === "users") { // not an auth record
     setAdmin(pb.authStore.model);
 }
 

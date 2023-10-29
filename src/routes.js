@@ -2,11 +2,10 @@ import { replace }           from "svelte-spa-router";
 import { wrap }              from "svelte-spa-router/wrap";
 import ApiClient             from "@/utils/ApiClient";
 import PageIndex             from "@/components/PageIndex.svelte";
-import PageLogs              from "@/components/logs/PageLogs.svelte";
 import PageRecords           from "@/components/records/PageRecords.svelte";
-import PageAdmins            from "@/components/admins/PageAdmins.svelte";
 import PageAdminLogin        from "@/components/admins/PageAdminLogin.svelte";
 import PageApplication       from "@/components/settings/PageApplication.svelte";
+import PageAdmins            from "@/components/settings/PageAdmins.svelte";
 
 const baseConditions = [
     async (details) => {
@@ -41,12 +40,6 @@ const routes = {
 
     "/collections": wrap({
         component:  PageRecords,
-        conditions: baseConditions.concat([(_) => ApiClient.authStore.isValid]),
-        userData: { showAppSidebar: true },
-    }),
-
-    "/logs": wrap({
-        component: PageLogs,
         conditions: baseConditions.concat([(_) => ApiClient.authStore.isValid]),
         userData: { showAppSidebar: true },
     }),
