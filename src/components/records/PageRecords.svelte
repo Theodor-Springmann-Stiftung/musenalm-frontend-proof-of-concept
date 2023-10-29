@@ -9,7 +9,6 @@
         loadCollections,
         changeActiveCollectionById,
     } from "@/stores/collections";
-    import tooltip from "@/actions/tooltip";
     import { pageTitle } from "@/stores/app";
     import PageWrapper from "@/components/base/PageWrapper.svelte";
     import Searchbar from "@/components/base/Searchbar.svelte";

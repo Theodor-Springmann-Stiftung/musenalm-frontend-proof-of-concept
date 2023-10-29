@@ -1303,6 +1303,33 @@ export default class CommonHelper {
         return [].concat(auth.sort(sortNames), base.sort(sortNames), view.sort(sortNames));
     }
 
+    /**
+     * Merges two collection arrays to enrich collection data.
+     *
+     * @param  {Array} collections
+     * @param  {Array} usercollections
+     * @return {Array}
+     */
+    static mergeCollection(collections = [], usercollections = []) {
+        const nc = [];
+        for (const collection of collections) {
+            let n = usercollections.filter((x) => x.name === collection.name);
+            if (n && n.length > 0) {
+                for (const s of collection.schema) {
+                    let ns  = n[0].schema.findIndex((x) => x.name === s.name);
+                    if (ns >= 0) {
+                        n[0].schema[ns] = {...s, ...n[0].schema[ns]};
+                    }
+                }
+                console.log(n[0]);
+                nc.push({...collection,...n[0]});
+            }
+        }
+
+        return nc;
+    }
+
+
 
     /**
      * "Yield" to the main thread to break long runing task into smaller ones.
@@ -1377,6 +1404,7 @@ export default class CommonHelper {
         }
 
         return {
+            language: "de",
             branding: false,
             promotion: false,
             menubar: false,
@@ -1458,33 +1486,34 @@ export default class CommonHelper {
                 });
 
                 // text direction dropdown
-                editor.ui.registry.addMenuButton("direction", {
-                    icon: "visualchars",
-                    fetch: (callback) => {
-                        const items = [
-                            {
-                                type: "menuitem",
-                                text: "LTR content",
-                                icon: "ltr",
-                                onAction: () => {
-                                    window?.localStorage?.setItem(lastDirectionKey, "ltr");
-                                    editor.execCommand("mceDirectionLTR");
-                                }
-                            },
-                            {
-                                type: "menuitem",
-                                text: "RTL content",
-                                icon: "rtl",
-                                onAction: () => {
-                                    window?.localStorage?.setItem(lastDirectionKey, "rtl");
-                                    editor.execCommand("mceDirectionRTL");
-                                }
-                            }
-                        ];
+                // Ungebraucht
+                // editor.ui.registry.addMenuButton("direction", {
+                //     icon: "visualchars",
+                //     fetch: (callback) => {
+                //         const items = [
+                //             {
+                //                 type: "menuitem",
+                //                 text: "LTR content",
+                //                 icon: "ltr",
+                //                 onAction: () => {
+                //                     window?.localStorage?.setItem(lastDirectionKey, "ltr");
+                //                     editor.execCommand("mceDirectionLTR");
+                //                 }
+                //             },
+                //             {
+                //                 type: "menuitem",
+                //                 text: "RTL content",
+                //                 icon: "rtl",
+                //                 onAction: () => {
+                //                     window?.localStorage?.setItem(lastDirectionKey, "rtl");
+                //                     editor.execCommand("mceDirectionRTL");
+                //                 }
+                //             }
+                //         ];
 
-                        callback(items);
-                    }
-                });
+                //         callback(items);
+                //     }
+                // });
 
                 editor.ui.registry.addMenuButton("image_picker", {
                     icon: "image",
@@ -1492,7 +1521,7 @@ export default class CommonHelper {
                         const items = [
                             {
                                 type: "menuitem",
-                                text: "From collection",
+                                text: "Aus Sammlung",
                                 icon: "gallery",
                                 onAction: () => {
                                     editor.dispatch("collections_file_picker", {})
@@ -1895,10 +1924,17 @@ export default class CommonHelper {
         if (!searchTerm || !fallbackFields.length) {
             return searchTerm;
         }
+        
+        searchTerm = searchTerm.replace(/IST NICHT/, "!=");
+        searchTerm = searchTerm.replace(/IST/, "=");
+        searchTerm = searchTerm.replace(/ENTHÄLT NICHT/, "!~");
+        searchTerm = searchTerm.replace(/ENTHÄLT/, "~");
+        searchTerm = searchTerm.replace(/WAHR/, "true");
+        searchTerm = searchTerm.replace(/FALSCH/, "false");
 
         const opChars = ["=", "!=", "~", "!~", ">", ">=", "<", "<="];
 
-        // loosely check if it is already a filter expression
+        // TODO loosely check if it is already a filter expression
         for (const op of opChars) {
             if (searchTerm.includes(op)) {
                 return searchTerm;

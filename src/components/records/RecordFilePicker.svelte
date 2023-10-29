@@ -162,7 +162,7 @@
         }
 
         // constuct the dropdown options
-        sizeOptions = [{ label: "Original size", value: "" }];
+        sizeOptions = [{ label: "Originalgröße", value: "" }];
         for (const size of sizes) {
             sizeOptions.push({
                 label: `${size} thumb`,
@@ -221,7 +221,7 @@
 
     {#if !fileCollections.length}
         <h6 class="txt-center txt-hint">
-            You currently don't have any collection with <code>file</code> field.
+            Es gibt zurzeit keine Sammlungen mit einem <code>Datei</code>-Feld.
         </h6>
     {:else}
         <div class="file-picker">
@@ -253,7 +253,7 @@
                         class="btn btn-pill btn-transparent btn-hint p-l-xs p-r-xs"
                         on:click={() => upsertPanel?.show()}
                     >
-                        <div class="txt">New record</div>
+                        <div class="txt">Datensatz erstellen</div>
                     </button>
                 </div>
                 <Scroller
@@ -290,14 +290,14 @@
                         {/each}
                     {:else if !isLoading}
                         <div class="inline-flex">
-                            <span class="txt txt-hint">No records with images found.</span>
+                            <span class="txt txt-hint">Keine Datensätze mit Bildern gefunden.</span>
                             {#if filter?.length}
                                 <button
                                     type="button"
                                     class="btn btn-hint btn-sm"
                                     on:click|preventDefault={clearFilter}
                                 >
-                                    <span class="txt">Clear filter</span>
+                                    <span class="txt">Filter zurücksetzen</span>
                                 </button>
                             {/if}
                         </div>
@@ -325,7 +325,7 @@
                     id={uniqueId}
                     items={sizeOptions}
                     disabled={!canSubmit}
-                    selectPlaceholder="Select size"
+                    selectPlaceholder="Größe auswählen"
                     bind:keyOfSelected={selectedSize}
                 />
             </Field>

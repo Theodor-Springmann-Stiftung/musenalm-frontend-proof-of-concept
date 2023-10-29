@@ -201,7 +201,7 @@
 <OverlayPanel bind:this={pickerPanel} popup class="overlay-panel-xl" on:hide on:show {...$$restProps}>
     <svelte:fragment slot="header">
         <h4>
-            Select <strong>{collection?.name || ""}</strong> records
+            Datensätze aus <strong>{collection?.name || ""}</strong> wählen
         </h4>
     </svelte:fragment>
 
@@ -217,7 +217,7 @@
                 class="btn btn-pill btn-transparent btn-hint p-l-xs p-r-xs"
                 on:click={() => upsertPanel?.show()}
             >
-                <div class="txt">New record</div>
+                <div class="txt">Datensatz erstellen</div>
             </button>
         {/if}
     </div>
@@ -272,10 +272,10 @@
         {:else}
             {#if !isLoading}
                 <div class="list-item">
-                    <span class="txt txt-hint">No records found.</span>
+                    <span class="txt txt-hint">Keine Datensätze gefunden.</span>
                     {#if filter?.length}
                         <button type="button" class="btn btn-hint btn-sm" on:click={() => (filter = "")}>
-                            <span class="txt">Clear filters</span>
+                            <span class="txt">Filter zurücksetzen</span>
                         </button>
                     {/if}
                 </div>
@@ -292,9 +292,9 @@
     </div>
 
     <h5 class="section-title">
-        Selected
+        Verlinkte Datensätze
         {#if maxSelect > 1}
-            ({selected.length} of MAX {maxSelect})
+            ({selected.length} von maximal {maxSelect})
         {/if}
     </h5>
     {#if selected.length}
@@ -316,15 +316,15 @@
             {/each}
         </div>
     {:else}
-        <p class="txt-hint">No selected records.</p>
+        <p class="txt-hint">Keine Datensätze ausgewählt.</p>
     {/if}
 
     <svelte:fragment slot="footer">
         <button type="button" class="btn btn-transparent" on:click={() => hide()}>
-            <span class="txt">Cancel</span>
+            <span class="txt">Abbrechen</span>
         </button>
         <button type="button" class="btn" on:click={() => save()}>
-            <span class="txt">Set selection</span>
+            <span class="txt">Auswählen</span>
         </button>
     </svelte:fragment>
 </OverlayPanel>

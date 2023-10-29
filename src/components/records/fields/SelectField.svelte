@@ -32,6 +32,10 @@
         bind:selected={value}
     />
     {#if field.options?.maxSelect > 1}
-        <div class="help-block">Select up to {field.options.maxSelect} items.</div>
+        <div class="help-block">Bis zu {field.options.maxSelect} Werte auswählbar.</div>
+    {/if}
+
+    {#if field.options?.maxSelect == 1}
+        <div class="help-block">Ein Wert auswählbar.</div>
     {/if}
 </Field>

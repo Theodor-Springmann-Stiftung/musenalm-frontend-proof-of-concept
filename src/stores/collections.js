@@ -1,6 +1,7 @@
 import { writable } from "svelte/store";
 import ApiClient    from "@/utils/ApiClient";
 import CommonHelper from "@/utils/CommonHelper";
+import collectionsuserdata from "@/collections_userdata";
 
 export const collections                    = writable([]);
 export const activeCollection               = writable({});
@@ -63,6 +64,10 @@ export async function loadCollections(activeId = null) {
         })
 
         items = CommonHelper.sortCollections(items);
+
+        items = CommonHelper.mergeCollection(items, collectionsuserdata);
+
+        console.log(items);
 
         collections.set(items);
 

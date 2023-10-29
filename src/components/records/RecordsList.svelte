@@ -514,11 +514,11 @@
         </div>
         <button
             type="button"
-            class="btn btn-xs btn-transparent btn-outline p-l-5 p-r-5"
+            class="btn btn-xs btn-transparent btn-secondary p-l-5 p-r-5"
             class:btn-disabled={isDeleting}
             on:click={() => deselectAllRecords()}
         >
-            <span class="txt">Reset</span>
+            <span class="txt">Zurücksetzen</span>
         </button>
         <div class="flex-fill" />
         <button

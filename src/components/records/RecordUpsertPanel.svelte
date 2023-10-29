@@ -12,7 +12,6 @@
     import Toggler from "@/components/base/Toggler.svelte";
     import ModelDateIcon from "@/components/base/ModelDateIcon.svelte";
     import OverlayPanel from "@/components/base/OverlayPanel.svelte";
-    import AuthFields from "@/components/records/fields/AuthFields.svelte";
     import TextField from "@/components/records/fields/TextField.svelte";
     import NumberField from "@/components/records/fields/NumberField.svelte";
     import BoolField from "@/components/records/fields/BoolField.svelte";
@@ -24,7 +23,6 @@
     import FileField from "@/components/records/fields/FileField.svelte";
     import RelationField from "@/components/records/fields/RelationField.svelte";
     import EditorField from "@/components/records/fields/EditorField.svelte";
-    import ExternalAuthsList from "@/components/records/ExternalAuthsList.svelte";
 
     const dispatch = createEventDispatcher();
     const formId = "record_" + CommonHelper.randomString(5);

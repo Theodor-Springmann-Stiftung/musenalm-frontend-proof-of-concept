@@ -7,7 +7,7 @@
     const uniqueId = "search_" + CommonHelper.randomString(7);
 
     export let value = "";
-    export let placeholder = 'Such- oder Filterbegriff (wie Name ~ "Lichtenberg")...';
+    export let placeholder = 'Such- oder Filterbegriff (wie Name ENTHÄLT "Lichtenberg")...';
 
     // autocomplete filter component fields
     export let autocompleteCollection = CommonHelper.initCollection();
@@ -104,7 +104,7 @@
     {#if value.length || tempValue.length}
         <button
             type="button"
-            class="btn btn-outline btn-transparent btn-sm  p-l-xs p-r-xs m-l-10"
+            class="btn btn-outline btn-secondary btn-sm  p-l-xs p-r-xs m-l-10"
             transition:fly={{ duration: 150, x: 5 }}
             on:click={() => {
                 clear(true);

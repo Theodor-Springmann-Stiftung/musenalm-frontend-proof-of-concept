@@ -51,7 +51,7 @@
         href={originalUrl}
         target="_blank"
         rel="noreferrer"
-        title={(hasPreview ? "Preview" : "Download") + " " + filename}
+        title={(hasPreview ? "Vorschau" : "Download") + " " + filename}
         on:click|stopPropagation={(e) => {
             if (hasPreview) {
                 e.preventDefault();
@@ -64,7 +64,7 @@
                 draggable={false}
                 src={thumbUrl}
                 alt={filename}
-                title="Preview {filename}"
+                title="Vorschau {filename}"
                 loading="lazy"
                 on:error={onError}
             />

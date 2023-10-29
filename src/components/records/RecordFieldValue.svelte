@@ -40,7 +40,7 @@
         href={rawValue}
         target="_blank"
         rel="noopener noreferrer"
-        use:tooltip={"Open in new tab"}
+        use:tooltip={"In neuem Tab öffnen"}
         on:click|stopPropagation
     >
         {CommonHelper.truncate(rawValue)}

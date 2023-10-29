@@ -8,6 +8,7 @@
     const uniqueId = "field_" + CommonHelper.randomString(7);
     const defaultError = "Ungültiger Wert";
 
+    export let help = "";
     export let name = "";
     export let inlineError = false;
 
@@ -66,5 +67,9 @@
                 <pre>{getErrorMessage(error)}</pre>
             </div>
         {/each}
+    {/if}
+
+    {#if help}
+        <div class="help-block">{help}</div>
     {/if}
 </div>

@@ -353,6 +353,12 @@
         }
 
         let options = [
+            { label: "WAHR" },
+            { label: "FALSCH" },
+            { label: "IST" },
+            { label: "IST NICHT" },
+            { label: "ENTHÄLT" },
+            { label: "ENTHÄLT NICHT" },
             { label: "false" },
             { label: "true" },
             { label: "@now" },
@@ -397,7 +403,7 @@
                 start: [
                     // base literals
                     {
-                        regex: /true|false|null/,
+                        regex: /true|false|WAHR|FALSCH|null/,
                         token: "atom",
                     },
                     // double quoted string
@@ -414,6 +420,11 @@
                         regex: /\&\&|\|\||\=|\!\=|\~|\!\~|\>|\<|\>\=|\<\=/,
                         token: "operator",
                     },
+                    { regex: /IST NICHT/, token: "operator" },
+                    { regex: /IST/, token: "operator" },
+                    { regex: /ENTHÄLT NICHT/, token: "operator" },
+                    { regex: /ENTHÄLT/, token: "operator" },
+
                     // indent and dedent properties guide autoindentation
                     { regex: /[\{\[\(]/, indent: true },
                     { regex: /[\}\]\)]/, dedent: true },
