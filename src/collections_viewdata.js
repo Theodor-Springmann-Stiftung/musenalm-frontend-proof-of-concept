@@ -5,7 +5,12 @@ const collections_viewdata = [
         schema: [
             {
                 name: "Organisation",
-                help: "Wahr, wenn es sich um eine Körperschaft handelt."
+                help: "Wahr, wenn es sich um eine Körperschaft handelt.",
+                badge: {
+                    after: "Name",
+                    text: "ORG",
+                    tooltip: "Körperschaft"
+                }
             },
             {
                 name: "Name",
@@ -96,9 +101,17 @@ const collections_viewdata = [
             },
             {
                 name: "Gesichtet",
+                badge: {
+                    tooltip: "Gesichtet",
+                    icon: "ri-eye-fill"
+                }
             },
             {
                 name: "Erfasst",
+                badge: {
+                    tooltip: "Erfasst",
+                    icon: "ri-checkbox-circle-line",
+                }
             },
             {
                 name: "Status",
@@ -129,6 +142,9 @@ const collections_viewdata = [
             },
             {
                 name: "Paginierung",
+                badge: {
+                    after: "Seite"
+                }
             },
             {
                 name: "Titelangabe",
@@ -152,7 +168,7 @@ const collections_viewdata = [
     },
     {
         name: "Reihentitel",
-        icon: "ri-list-check",
+        icon: "ri-organization-chart",
         schema: [
             {
                 name: "Titel",

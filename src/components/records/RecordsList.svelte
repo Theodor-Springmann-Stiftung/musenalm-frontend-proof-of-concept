@@ -81,11 +81,15 @@
                     { id: "@email", name: "email" },
                 ]
             : [],
-        fields.map((f) => {
-            return { id: f.id, name: f.friendlyName ? f.friendlyName : f.name };
+        fields
+            .filter((x) => 
+                x.name == "Name"
+            )
+            .map((f) => {
+            return { id: f.id, name: f.friendlyName ?? f.name };
         }),
-        hasCreated ? { id: "@created", name: "created" } : [],
-        hasUpdated ? { id: "@updated", name: "updated" } : []
+        hasCreated ? { id: "@created", name: "Erstellt" } : [],
+        hasUpdated ? { id: "@updated", name: "Bearbeitet" } : []
     );
 
     function updateStoredHiddenColumns() {

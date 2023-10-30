@@ -21,7 +21,7 @@
 {#if date}
     <div class="datetime" use:tooltip={tooltipData}>
         <div class="date">{dateOnly}</div>
-        <div class="time">{timeOnly} EMT</div>
+        <div class="time">{timeOnly} UTC</div>
     </div>
 {:else}
     <span class="txt txt-hint">N/A</span>
