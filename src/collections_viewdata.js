@@ -7,7 +7,7 @@ const collections_viewdata = [
                 name: "Organisation",
                 help: "Wahr, wenn es sich um eine Körperschaft handelt.",
                 badge: {
-                    after: "Name",
+                    before: "Name",
                     text: "ORG",
                     tooltip: "Körperschaft"
                 }
@@ -193,5 +193,14 @@ const collections_viewdata = [
             }
         ]
     },
+    {
+        name: "users",
+        schema: [
+            {
+                name: "Roles",
+                hidden: true,
+            }
+        ]
+    }
 ];
 export default collections_viewdata;

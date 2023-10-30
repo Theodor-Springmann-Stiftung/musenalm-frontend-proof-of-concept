@@ -42,6 +42,18 @@ table {
         word-break: break-word;
     }
 
+    td .badge {
+        display: inline-block;
+        position: relative;
+        bottom: 1px;
+        margin-right: 3px;
+        background-color: var(--baseAlt2Color);
+        border-radius: 12px;
+        padding: 1px 7px;
+        line-height: normal;
+        font-size: 10px;
+    }
+
     .min-width {
         width: 1% !important;
         white-space: nowrap;

@@ -54,7 +54,14 @@
 
     $: relFields = fields.filter((field) => field.type === "relation");
 
-    $: visibleFields = fields.filter((field) => !hiddenColumns.includes(field.id));
+    $: visibleFields = fields.filter(
+        (field) =>
+            !hiddenColumns.includes(field.id) &&
+            !(field.hidden && field.hidden === true) &&
+            !(field.badge && (field.badge.after || field.badge.before))
+    );
+
+    $: badges = fields.filter((field) => field.badge);
 
     $: if (collection?.id && sort !== -1 && filter !== -1) {
         load(1);
@@ -77,17 +84,15 @@
     $: collumnsToHide = [].concat(
         isAuth
             ? [
-                    { id: "@username", name: "username" },
-                    { id: "@email", name: "email" },
-                ]
+                  { id: "@username", name: "username" },
+                  { id: "@email", name: "email" },
+              ]
             : [],
         fields
-            .filter((x) => 
-                x.name == "Name"
-            )
+            .filter((x) => !(x.badge && (x.badge.after || x.badge.before)) && !(x.hidden && x.hidden === true))
             .map((f) => {
-            return { id: f.id, name: f.friendlyName ?? f.name };
-        }),
+                return { id: f.id, name: f.friendlyName ?? f.name };
+            }),
         hasCreated ? { id: "@created", name: "Erstellt" } : [],
         hasUpdated ? { id: "@updated", name: "Bearbeitet" } : []
     );
@@ -266,6 +271,10 @@
         confirm(msg, deleteSelected);
     }
 
+    function getBadge(fieldName, property) {
+        return badges.filter((f) => f.badge?.[property] && f.badge?.[property] === fieldName);
+    }
+
     async function deleteSelected() {
         if (isDeleting || !totalBulkSelected || !collection?.id) {
             return;
@@ -281,7 +290,11 @@
         return Promise.all(promises)
             .then(() => {
                 addSuccessToast(
-                    `${totalBulkSelected === 1 ? "Der ausgewählte Datensatz wurde" : "Die ausgewählten Datensätze wurden"} erfolgreich gelöscht.`
+                    `${
+                        totalBulkSelected === 1
+                            ? "Der ausgewählte Datensatz wurde"
+                            : "Die ausgewählten Datensätze wurden"
+                    } erfolgreich gelöscht.`
                 );
 
                 dispatch("delete", bulkSelected);
@@ -428,10 +441,7 @@
         </thead>
         <tbody>
             {#each records as record (!isView ? record.id : record)}
-                <tr
-                    tabindex="0"
-                    class="row-handle"
-                >
+                <tr tabindex="0" class="row-handle">
                     {#if !isView}
                         <td class="bulk-select-col min-width">
                             <!-- svelte-ignore a11y-click-events-have-key-events -->
@@ -500,7 +510,33 @@
 
                     {#each visibleFields as field (field.name)}
                         <td class="col-type-{field.type} col-field-{field.name}">
+                            {#each getBadge(field.name , "before") as b (b.name)}
+                                {#if b.type === "bool" && record?.[b.name] === true}
+                                    <div class="badge" use:tooltip={b.badge.tooltip ?? b.friendlyName ?? b.name}>
+                                        {#if b.badge.icon}
+                                            <i class="{b.badge.icon} txt-sm txt-success" />
+                                        {/if}
+                                        {#if b.badge.text}
+                                            {b.badge.text}
+                                        {/if}
+                                    </div>
+                                {/if}
+                            {/each}
+
                             <RecordFieldValue short {record} {field} />
+
+                            {#each getBadge(field.name , "after") as b (b.name)}
+                                {#if b.type === "bool" && record?.[b.name] === true}
+                                    <div class="badge" use:tooltip={b.badge.tooltip ?? b.friendlyName ?? b.name}>
+                                        {#if b.badge.icon}
+                                            <i class="{b.badge.icon} txt-sm txt-success" />
+                                        {/if}
+                                        {#if b.badge.text}
+                                            {b.badge.text}
+                                        {/if}
+                                    </div>
+                                {/if}
+                            {/each}
                         </td>
                     {/each}
 
@@ -515,7 +551,7 @@
                             <FormattedDate date={record.updated} />
                         </td>
                     {/if}
-                    
+
                     <td class="col-type-action min-width">
                         <div class="col-actions">
                             <button
@@ -529,32 +565,30 @@
                                         e.preventDefault();
                                         dispatch("select", record);
                                     }
-                                }}>
-                                <i 
-                                    class="ri-pencil-fill"
-                                    use:tooltip={"Bearbeiten"}
-                                />
-                            </button>
-                            
-                            {#if crossReferences && crossReferences.length}
-                            {#each crossReferences as cr}
-                            <a
-                                type="button"
-                                aria-label="verküpfte {cr.friendlyName ?? cr.table}"
-                                use:tooltip={(cr.friendlyName ?? cr.table)}
-                                class="btn btn-sm btn-transparent p-0"
-                                href="/collections?collectionId={cr.id}&filter={CommonHelper.createFilterLink(record.id, cr.fields)}"
-                                use:link
+                                }}
                             >
-                                <i class="{cr.icon}"/>
-                            </a>
-                            {/each}
+                                <i class="ri-pencil-fill" use:tooltip={"Bearbeiten"} />
+                            </button>
+
+                            {#if crossReferences && crossReferences.length}
+                                {#each crossReferences as cr}
+                                    <a
+                                        type="button"
+                                        aria-label="verküpfte {cr.friendlyName ?? cr.table}"
+                                        use:tooltip={cr.friendlyName ?? cr.table}
+                                        class="btn btn-sm btn-transparent p-0"
+                                        href="/collections?collectionId={cr.id}&filter={CommonHelper.createFilterLink(
+                                            record.id,
+                                            cr.fields
+                                        )}"
+                                        use:link
+                                    >
+                                        <i class={cr.icon} />
+                                    </a>
+                                {/each}
                             {/if}
-                            
                         </div>
                     </td>
-                    
-                    
                 </tr>
             {:else}
                 {#if isLoading}
@@ -598,7 +632,6 @@
                             disabled={isLoading}
                             class:btn-loading={isLoading}
                             on:click|preventDefault={() => load(currentPage + 1)}
-
                         >
                             <span class="txt">Mehr Einträge laden</span>
                         </button>
