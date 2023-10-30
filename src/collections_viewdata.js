@@ -192,15 +192,6 @@ const collections_viewdata = [
                 fields: [ "Uebertragungen_von", "Reihen", "Titelauflage_von" ]
             }
         ]
-    },
-    {
-        name: "users",
-        schema: [
-            {
-                name: "Roles",
-                hidden: true,
-            }
-        ]
     }
 ];
 export default collections_viewdata;
