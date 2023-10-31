@@ -1,53 +1,62 @@
 const collection_users = {
-	"id": "fqi5mjbr4v7jxu6",
-	"created": "2023-10-29 11:01:22.251Z",
-	"updated": "2023-10-29 11:49:13.632Z",
+	"id": "_pb_users_auth_",
+	"created": "2023-10-31 16:27:49.212Z",
+	"updated": "2023-10-31 16:27:49.214Z",
 	"name": "users",
 	"type": "auth",
 	"system": false,
 	"schema": [
 		{
 			"system": false,
-			"id": "ejk92x5n",
-			"name": "Roles",
-			"type": "select",
+			"id": "users_name",
+			"name": "name",
+			"type": "text",
 			"required": false,
-			"presentable": true,
+			"presentable": false,
 			"unique": false,
 			"options": {
-				"maxSelect": 1,
-				"values": [
-					"Viewer",
-					"Editor",
-					"Manager"
-				]
+				"min": null,
+				"max": null,
+				"pattern": ""
 			}
 		},
 		{
 			"system": false,
-			"id": "tcsxnbjt",
-			"name": "UserSettings",
-			"type": "json",
+			"id": "users_avatar",
+			"name": "avatar",
+			"type": "file",
 			"required": false,
 			"presentable": false,
 			"unique": false,
-			"options": {}
+			"options": {
+				"maxSelect": 1,
+				"maxSize": 5242880,
+				"mimeTypes": [
+					"image/jpeg",
+					"image/png",
+					"image/svg+xml",
+					"image/gif",
+					"image/webp"
+				],
+				"thumbs": null,
+				"protected": false
+			}
 		}
 	],
 	"indexes": [],
-	"listRule": "id = @request.auth.id || @request.auth.Roles = \"Manager\"",
-	"viewRule": "id = @request.auth.id || @request.auth.Roles = \"Manager\"",
-	"createRule": "@request.auth.Roles = \"Manager\"",
-	"updateRule": "id = @request.auth.id || @request.auth.Roles = \"Manager\"",
-	"deleteRule": "@request.auth.Roles = \"Manager\"",
+	"listRule": "id = @request.auth.id",
+	"viewRule": "id = @request.auth.id",
+	"createRule": "",
+	"updateRule": "id = @request.auth.id",
+	"deleteRule": "id = @request.auth.id",
 	"options": {
 		"allowEmailAuth": true,
-		"allowOAuth2Auth": false,
+		"allowOAuth2Auth": true,
 		"allowUsernameAuth": true,
-		"exceptEmailDomains": [],
+		"exceptEmailDomains": null,
 		"manageRule": null,
 		"minPasswordLength": 8,
-		"onlyEmailDomains": [],
+		"onlyEmailDomains": null,
 		"requireEmail": false
 	}
 }

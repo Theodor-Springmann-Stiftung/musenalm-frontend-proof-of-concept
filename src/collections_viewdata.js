@@ -4,7 +4,7 @@ const collections_viewdata = [
         icon: "ri-group-line",
         schema: [
             {
-                name: "Organisation",
+                name: "Körperschaft",
                 help: "Wahr, wenn es sich um eine Körperschaft handelt.",
                 badge: {
                     before: "Name",
@@ -189,7 +189,7 @@ const collections_viewdata = [
         crossReferences: [
             {
                 table: "Baende",
-                fields: [ "Uebertragungen_von", "Reihen", "Titelauflage_von" ]
+                fields: [ "Bevorzugter_Reihentitel", "Alternativer_Reihentitel", "Franzoesischer_Reihentitel", "Deutscher_Reihentitel", "Alternatives_Titelblatt", "TA_von", "hat_TA" ]
             }
         ]
     }

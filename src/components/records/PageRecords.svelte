@@ -147,7 +147,7 @@
         <header class="page-header">
             <nav class="breadcrumbs">
                 <div class="breadcrumb-item">Sammlungen</div>
-                <div class="breadcrumb-item">{$activeCollection.name}</div>
+                <div class="breadcrumb-item">{$activeCollection.freiendlyname ?? $activeCollection.name}</div>
             </nav>
 
             <div class="inline-flex gap-5">

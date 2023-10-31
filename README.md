@@ -22,3 +22,16 @@ npm run build
 ## ToDo
 - Data Transfer
 - Hide user roles
+
+- Gruppieren von Feldern
+    - Struktur und Norm
+    - Reihen
+- Spalten fÜr badges
+- Color Coding der Collections
+- Aus dem Edit Feld nach Verlinkungen
+- Verlinkung des Objekts in der Tabelle
+- vertikale orientierung der Felder und Ausschreiben von Werten
+- Seitenleiste kleiner
+- Datensatz löschen in Bearbeiten-Feld
+
+Kein ö!

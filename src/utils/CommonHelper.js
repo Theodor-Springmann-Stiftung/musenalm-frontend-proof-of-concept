@@ -1313,20 +1313,25 @@ export default class CommonHelper {
     static mergeCollection(collections = [], usercollections = []) {
         const nc = [];
         for (const collection of collections) {
-            let n = usercollections.filter((x) => x.name === collection.name);
-            if (n && n.length > 0) {
-                for (const s of collection.schema) {
-                    let ns  = n[0].schema.findIndex((x) => x.name === s.name);
-                    if (ns >= 0) {
-                        n[0].schema[ns] = {...s, ...n[0].schema[ns]};
+            let un = usercollections.filter((x) => x.name === collection.name);
+            if (un && un.length > 0) {
+                if (un[0].schema) {
+                    for (const us of un[0].schema) {
+                        let ns  = collection.schema.findIndex((x) => x.name === us.name);
+                        if (ns >= 0) {
+                            collection.schema[ns] = {...collection.schema[ns], ...us};
+                        }
                     }
                 }
-                nc.push({...collection,...n[0]});
+                nc.push({...un[0],...collection});
+            } else {
+                nc.push(collection)
             }
         }
-
+        console.log(nc);
         return nc;
     }
+
 
     /**
      * Merges two collection arrays to enrich collection data.
