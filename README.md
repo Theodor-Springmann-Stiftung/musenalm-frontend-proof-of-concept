@@ -26,12 +26,9 @@ npm run build
 - Gruppieren von Feldern
     - Struktur und Norm
     - Reihen
-- Spalten fÜr badges
 - Color Coding der Collections
 - Aus dem Edit Feld nach Verlinkungen
 - Verlinkung des Objekts in der Tabelle
-- vertikale orientierung der Felder und Ausschreiben von Werten
+- Ausschreiben von Werten (Vl. Expand on click?)
 - Seitenleiste kleiner
-- Datensatz löschen in Bearbeiten-Feld
-
-Kein ö!
+- BUG: Klick auf die Titelleiste sortiert naicht mehr

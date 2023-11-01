@@ -1,7 +1,8 @@
-const collection_users = {
+const collection_users = 
+{
 	"id": "_pb_users_auth_",
-	"created": "2023-10-31 16:27:49.212Z",
-	"updated": "2023-10-31 16:27:49.214Z",
+	"created": "2023-11-01 22:01:03.142Z",
+	"updated": "2023-11-01 22:01:03.143Z",
 	"name": "users",
 	"type": "auth",
 	"system": false,

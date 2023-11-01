@@ -17,7 +17,7 @@
 {#if field.type === "json"}
     {@const stringifiedJson = CommonHelper.trimQuotedValue(JSON.stringify(rawValue)) || '""'}
     {#if short}
-        <span class="txt txt-ellipsis">
+        <span class="txt ">
             {CommonHelper.truncate(stringifiedJson)}
         </span>
     {:else}
@@ -111,7 +111,7 @@
         {/if}
     </div>
 {:else if short}
-    <span class="txt txt-ellipsis" title={CommonHelper.truncate(rawValue)}>
+    <span class="txt" title={CommonHelper.truncate(rawValue)}>
         {CommonHelper.truncate(rawValue)}
     </span>
 {:else}

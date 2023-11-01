@@ -2,40 +2,28 @@ const collections_viewdata = [
     {
         name: "Akteure",
         icon: "ri-group-line",
+        defaultSort: "Name,Lebensdaten",
         schema: [
             {
-                name: "Körperschaft",
+                name: "Koerperschaft",
                 help: "Wahr, wenn es sich um eine Körperschaft handelt.",
                 badge: {
-                    before: "Name",
+                    before: "Titel",
                     text: "ORG",
                     tooltip: "Körperschaft"
                 }
-            },
-            {
-                name: "Name",
-            },
-            {
-                name: "Lebensdaten",
-            },
-            {
-                name: "Nachweis",
-            },
-            {
-                name: "Pseudonyme",
-            },
-            {
-                name: "Anmerkung",
             },
         ],
         crossReferences: [
             {
                 table: "Baende",
-                fields: [ "Verleger_Drucker", "Herausgeber" ]
+                fields: [ "Verleger_Drucker", "Herausgeber" ],
+                sort: "Kurztitel,Jahr"
             },
             {
                 table: "Inhalte",
-                fields: [ "Urheber" ]
+                fields: [ "Urheber" ],
+                sort: ""
             },
         ]
     },
@@ -43,6 +31,7 @@ const collections_viewdata = [
         name: "Baende",
         icon: "ri-book-line",
         friendlyName: "Bände",
+        defaultSort: "Kurztitel,Jahr",
         schema: [
             {
                 name: "Titelangabe",
@@ -55,60 +44,15 @@ const collections_viewdata = [
                 friendlyName: "Angaben zur Erscheinungsweise"
             },
             {
-                name: "Ort",
-            },
-            {
-                name: "Jahr",
-            },
-            {
-                name: "Reihen",
-            },
-            {
-                name: "Uebertragungen_von",
-            },
-            {
-                name: "Titelauflage_von",
-            },
-            {
-                name: "Nachweis",
-            },
-            {
-                name: "Struktur",
-            },
-            {
-                name: "Herausgeber",
-            },
-            {
-                name: "Verleger_Drucker",
-            },
-            {
-                name: "Musenalm_Nummer",
-            },
-            {
-                name: "BIBLIO_Nummer",
-            },
-            {
-                name: "Anmerkungen",
-            },
-            {
-                name: "Musenalm_Nummer_alt",
-            },
-            {
-                name: "Reihentitel_alt",
-            },
-            {
-                name: "Norm_alt",
-            },
-            {
                 name: "Gesichtet",
-                badge: {
+                iconcolumn: {
                     tooltip: "Gesichtet",
-                    icon: "ri-eye-fill"
+                    icon: "ri-eye-line"
                 }
             },
             {
                 name: "Erfasst",
-                badge: {
+                iconcolumn: {
                     tooltip: "Erfasst",
                     icon: "ri-checkbox-circle-line",
                 }
@@ -127,12 +71,13 @@ const collections_viewdata = [
     {
         name: "Inhalte",
         icon: "ri-file-text-line",
+        defaultSort: "Band,Objektnummer",
         schema: [
             {
                 name: "Band",
             },
             {
-                name: "Zaehler",
+                name: "Objektnummer",
             },
             {
                 name: "Seite",
@@ -169,10 +114,8 @@ const collections_viewdata = [
     {
         name: "Reihentitel",
         icon: "ri-organization-chart",
+        defaultSort: "Titel",
         schema: [
-            {
-                name: "Titel",
-            },
             {
                 name: "Nachweis",
             },
@@ -189,7 +132,8 @@ const collections_viewdata = [
         crossReferences: [
             {
                 table: "Baende",
-                fields: [ "Bevorzugter_Reihentitel", "Alternativer_Reihentitel", "Franzoesischer_Reihentitel", "Deutscher_Reihentitel", "Alternatives_Titelblatt", "TA_von", "hat_TA" ]
+                fields: [ "Bevorzugter_Reihentitel", "Alternativer_Reihentitel", "Franzoesischer_Reihentitel", "Deutscher_Reihentitel", "Alternatives_Titelblatt", "TA_von", "hat_TA" ],
+                sort: "Jahr,Kurztitel"
             }
         ]
     }

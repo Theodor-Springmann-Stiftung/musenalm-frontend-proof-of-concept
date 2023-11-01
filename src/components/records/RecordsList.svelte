@@ -58,8 +58,11 @@
         (field) =>
             !hiddenColumns.includes(field.id) &&
             !(field.hidden && field.hidden === true) &&
-            !(field.badge && (field.badge.after || field.badge.before))
+            !(field.badge && (field.badge.after || field.badge.before)) &&
+            !field.iconcolumn
     );
+
+    $: iconcolumns = fields.filter((field) => field.iconcolumn);
 
     $: badges = fields.filter((field) => field.badge);
 
@@ -89,7 +92,9 @@
               ]
             : [],
         fields
-            .filter((x) => !(x.badge && (x.badge.after || x.badge.before)) && !(x.hidden && x.hidden === true))
+            .filter((x) => 
+                !(x.badge && (x.badge.after || x.badge.before)) && 
+                !(x.hidden && x.hidden === true))
             .map((f) => {
                 return { id: f.id, name: f.friendlyName ?? f.name };
             }),
@@ -174,9 +179,9 @@
             listFields.unshift("*");
         }
 
-        return ApiClient.collection(collection.id)
+        return ApiClient.collection(collection.name)
             .getList(page, perPage, {
-                sort: listSort,
+                sort: collection.defaultSort ?? listSort,
                 skipTotal: 1,
                 filter: CommonHelper.normalizeSearchFilter(filter, fallbackSearchFields),
                 expand: relFields.map((field) => field.name).join(","),
@@ -365,6 +370,17 @@
                     </th>
                 {/if}
 
+                {#if iconcolumns.length}
+                {#each iconcolumns as iconcolumn (iconcolumn.name)}
+                    {#if !hiddenColumns.includes(iconcolumn.id)}
+                    <th class="icon-col min-width">
+                        <i class="{iconcolumn.iconcolumn.icon}"
+                        use:tooltip={iconcolumn.iconcolumn.tooltip}/>
+                    </th>
+                    {/if}
+                {/each}
+                {/if}
+
                 <!-- {#if !hiddenColumns.includes("@id")}
                     <SortHeader class="col-type-text col-field-id" name="id" bind:sort>
                         <div class="col-header-content">
@@ -443,7 +459,7 @@
             {#each records as record (!isView ? record.id : record)}
                 <tr tabindex="0" class="row-handle">
                     {#if !isView}
-                        <td class="bulk-select-col min-width">
+                        <td class="bulk-select-col min-width bulk-select-checkbox">
                             <!-- svelte-ignore a11y-click-events-have-key-events -->
                             <!-- svelte-ignore a11y-no-static-element-interactions -->
                             <div class="form-field" on:click|stopPropagation>
@@ -456,6 +472,19 @@
                                 <label for="checkbox_{record.id}" />
                             </div>
                         </td>
+                    {/if}
+
+                    {#if iconcolumns.length}
+                    {#each iconcolumns as iconcolumn (iconcolumn.name)}
+                    {#if !hiddenColumns.includes(iconcolumn.id)}
+                        <td class="icon-col min-width">
+                            {#if record?.[iconcolumn.name]}
+                                <i class="{iconcolumn.iconcolumn.icon}"
+                                use:tooltip={iconcolumn.iconcolumn.tooltip}/>
+                            {/if}
+                        </td>
+                    {/if}
+                    {/each}
                     {/if}
 
                     <!-- {#if !hiddenColumns.includes("@id")}
@@ -580,7 +609,7 @@
                                         href="/collections?collectionId={cr.id}&filter={CommonHelper.createFilterLink(
                                             record.id,
                                             cr.fields
-                                        )}"
+                                        )}&sort={cr.sort}"
                                         use:link
                                     >
                                         <i class={cr.icon} />
