@@ -37,6 +37,11 @@ PocketBase.prototype.error = function(err, notify = true, defaultMsg = "") {
 
     const statusCode = (err?.status << 0) || 400;
     const responseData = err?.data || {};
+    if (responseData.message) {
+        if (responseData.message.startsWith("Failed to delete record. Make sure")) {
+            responseData.message = "Der Datensatz konnte nicht gelöscht werden. Möglicherweise sind noch Einträge mit diesem Datensatz verküpft."
+        }
+    }
     const msg = responseData.message || err.message || defaultMsg;
 
     // add toast error notification

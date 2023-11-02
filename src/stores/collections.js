@@ -1,10 +1,11 @@
 import { writable } from "svelte/store";
 import ApiClient    from "@/utils/ApiClient";
 import CommonHelper from "@/utils/CommonHelper";
-import collections_user from "@/collections_user";
 import collections_viewdata from "@/collections_viewdata";
 
 export const collections                    = writable([]);
+export const userCollection                 = writable([]);
+export const pageCollections                = writable([]);
 export const activeCollection               = writable({});
 export const isCollectionsLoading           = writable(false);
 export const protectedFilesCollectionsCache = writable({});
@@ -37,21 +38,27 @@ export async function loadCollections(activeId = null) {
     isCollectionsLoading.set(true);
 
     try {
-        let items = collections_user;
-        items = CommonHelper.sortCollections(items);
-        items = CommonHelper.mergeCollection(items, collections_viewdata);
+        let result = await ApiClient.send('/api_ext/collections');
+        let sorted = CommonHelper.sortCollections(result);
+        let items = CommonHelper.mergeCollection(sorted.base, collections_viewdata);
         collections.set(items);
+        pageCollections.set(sorted.page);
 
         const item = activeId && CommonHelper.findByKey(items, "id", activeId);
         if (item) {
             activeCollection.set(item);
-            crossReferences.set(CommonHelper.enrichCrossReferences(item.name, items));
         } else if (items.length) {
             activeCollection.set(items[0]);
-            crossReferences.set(CommonHelper.enrichCrossReferences(items[0].name, items));
         }
 
         refreshProtectedFilesCollectionsCache();
+    } catch (err) {
+        ApiClient.error(err);
+    }
+
+    try {
+        let user_collection = await ApiClient.send('/api_ext/users_collection');
+        userCollection.set(user_collection);
     } catch (err) {
         ApiClient.error(err);
     }

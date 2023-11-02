@@ -76,7 +76,7 @@
     function reset() {
         selectedCollectionId = $activeCollection?.id;
         //filter = "";
-        sort = "-created";
+        sort = $activeCollection.defaultSort ?? "-created";
 
         updateQueryParams({ recordId: null });
 
@@ -99,6 +99,11 @@
             }
             return f;
         });
+
+        if ($activeCollection.defaultSort) {
+            sort = $activeCollection.defaultSort
+            return;
+        }
 
         // invalid sort expression or missing sort field
         if (sortFields.filter((f) => collectionFields.includes(f)).length != sortFields.length) {

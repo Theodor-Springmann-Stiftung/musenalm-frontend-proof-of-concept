@@ -17,15 +17,15 @@ const collections_viewdata = [
         crossReferences: [
             {
                 table: "Baende",
-                fields: [ "Verleger_Drucker", "Herausgeber" ],
+                fields: [ "Verlag", "Druck", "Herausgabe", "Vertrieb" ],
                 sort: "Kurztitel,Jahr"
             },
             {
                 table: "Inhalte",
-                fields: [ "Urheber" ],
+                fields: [ "Geschaffen", "Geschrieben", "Gezeichnet", "Gestochen" ],
                 sort: ""
             },
-        ]
+        ],
     },
     {
         name: "Baende",
@@ -65,6 +65,16 @@ const collections_viewdata = [
             {
                 table: "Inhalte",
                 fields: [ "Band" ]
+            }
+        ],
+        groupFields: [
+            {
+                name: "Reihen",
+                fields: ["Bevorzugter_Reihentitel", "Alternativer_Reihentitel", "Franzoesischer_Reihentitel", "Deutscher_Reihentitel", "Alternatives_Titelblatt", "TA_von", "hat_TA"]
+            },
+            {
+                name: "Personen und Körperschaften",
+                fields: ["Herausgabe", "Druck", "Verlag", "Vertrieb"]
             }
         ]
     },
@@ -110,6 +120,13 @@ const collections_viewdata = [
                 name: "Musenalm_Nummer_alt",
             },
         ],
+        groupFields: [
+            {
+                name: "Akteure",
+                fields: ["Geschaffen", "Geschrieben", "Gezeichnet", "Gestochen"]
+            }
+        ]
+        
     },
     {
         name: "Reihentitel",
@@ -135,7 +152,7 @@ const collections_viewdata = [
                 fields: [ "Bevorzugter_Reihentitel", "Alternativer_Reihentitel", "Franzoesischer_Reihentitel", "Deutscher_Reihentitel", "Alternatives_Titelblatt", "TA_von", "hat_TA" ],
                 sort: "Jahr,Kurztitel"
             }
-        ]
+        ],
     }
 ];
 export default collections_viewdata;

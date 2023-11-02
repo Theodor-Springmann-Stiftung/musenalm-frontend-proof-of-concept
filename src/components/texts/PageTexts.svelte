@@ -4,13 +4,13 @@
     import PocketBase from "@/utils/ApiClient";
     import CommonHelper from "@/utils/CommonHelper";
     import {
+        pageCollections,
         collections,
         activeCollection,
         isCollectionsLoading,
         loadCollections,
         setActiveCollectionByObject,
     } from "@/stores/collections";
-    import collection_texts from "@/collection_texts";
     import { pageTitle } from "@/stores/app";
     import PageWrapper from "@/components/base/PageWrapper.svelte";
     import Searchbar from "@/components/base/Searchbar.svelte";
@@ -24,7 +24,7 @@
 
     const queryParams = new URLSearchParams($querystring);
 
-    let collectionSchema = collection_texts;
+    let collectionSchema = pageCollections[0];
     let admins = [];
     let isLoading = false;
     let recordsCount;

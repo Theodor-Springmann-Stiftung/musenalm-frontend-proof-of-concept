@@ -50,16 +50,24 @@
 
     $: fields = collection?.schema || [];
 
+    $: groupFields = collection?.groupFields || [];
+
+    $: additionalToHide = [].concat(collection?.groupFields.map((x) => x.fields));
+
     $: editorFields = fields.filter((field) => field.type === "editor");
 
     $: relFields = fields.filter((field) => field.type === "relation");
 
-    $: visibleFields = fields.filter(
-        (field) =>
-            !hiddenColumns.includes(field.id) &&
-            !(field.hidden && field.hidden === true) &&
-            !(field.badge && (field.badge.after || field.badge.before)) &&
-            !field.iconcolumn
+    $: visibleFields = [].concat(
+        fields.filter(
+            (field) =>
+                    !hiddenColumns.includes(field.id) &&
+                    !(field.hidden && field.hidden === true) &&
+                    !(field.badge && (field.badge.after || field.badge.before)) &&
+                    !field.iconcolumn &&
+                    !additionalToHide.includes(field.name)
+        ),
+        collection?.groupFields.map((x) => x.name) || []
     );
 
     $: iconcolumns = fields.filter((field) => field.iconcolumn);
@@ -181,7 +189,7 @@
 
         return ApiClient.collection(collection.name)
             .getList(page, perPage, {
-                sort: collection.defaultSort ?? listSort,
+                sort: listSort,
                 skipTotal: 1,
                 filter: CommonHelper.normalizeSearchFilter(filter, fallbackSearchFields),
                 expand: relFields.map((field) => field.name).join(","),
@@ -297,9 +305,9 @@
                 addSuccessToast(
                     `${
                         totalBulkSelected === 1
-                            ? "Der ausgewählte Datensatz wurde"
-                            : "Die ausgewählten Datensätze wurden"
-                    } erfolgreich gelöscht.`
+                            ? "Der Datensatz wurde"
+                            : "Die Datensätze wurden"
+                    } gelöscht.`
                 );
 
                 dispatch("delete", bulkSelected);
@@ -609,7 +617,7 @@
                                         href="/collections?collectionId={cr.id}&filter={CommonHelper.createFilterLink(
                                             record.id,
                                             cr.fields
-                                        )}&sort={cr.sort}"
+                                        )}&sort={cr.sort ?? "-created"}"
                                         use:link
                                     >
                                         <i class={cr.icon} />

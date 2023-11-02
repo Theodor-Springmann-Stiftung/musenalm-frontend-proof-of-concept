@@ -1271,7 +1271,7 @@ export default class CommonHelper {
 
     /**
      * Groups and sorts collections array by type (auth, base, view) and name.
-     *
+     * TODO: hard-coded name
      * @param  {Array} collections
      * @return {Array}
      */
@@ -1279,14 +1279,19 @@ export default class CommonHelper {
         const auth = [];
         const base = [];
         const view = [];
+        const page = [];
 
         for (const collection of collections) {
             if (collection.type === 'auth') {
                 auth.push(collection);
-            } else if (collection.type === 'base') {
-                base.push(collection);
-            } else {
+            } else if (collection.type === 'view') {
                 view.push(collection);
+            } else {
+                if (collection.name === "Bilder" || collection.name === "Texte") {
+                    page.push(collection);
+                } else {
+                    base.push(collection);
+                }
             }
         }
 
@@ -1300,7 +1305,7 @@ export default class CommonHelper {
             return 0;
         }
 
-        return [].concat(auth.sort(sortNames), base.sort(sortNames), view.sort(sortNames));
+        return { auth: auth, base: base, page: page, view: view };
     }
 
     /**
@@ -1328,7 +1333,6 @@ export default class CommonHelper {
                 nc.push(collection)
             }
         }
-        console.log(nc);
         return nc;
     }
 
