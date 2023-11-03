@@ -21,7 +21,6 @@
     const perPage = 40;
 
     export let collection;
-    export let crossReferences;
     export let sort = "";
     export let filter = "";
 
@@ -44,55 +43,34 @@
         clearList();
     }
 
+    // Whether its a view / auth collection
     $: isView = collection?.type === "view";
-
     $: isAuth = collection?.type === "auth";
 
+    // Fields which are the basis for viewing / hiding etc
     $: fields = collection?.schema || [];
-
-    $: groupFields = collection?.groupFields || [];
-
-    $: additionalToHide = [].concat(collection?.groupFields.map((x) => x.fields));
-
     $: editorFields = fields.filter((field) => field.type === "editor");
-
     $: relFields = fields.filter((field) => field.type === "relation");
 
+    // ViewData
+    $: viewdata = collection ? CommonHelper.loadViewDataOf(collection) : {};
+
+    // Columns that are visible
     $: visibleFields = [].concat(
         fields.filter(
             (field) =>
                     !hiddenColumns.includes(field.id) &&
-                    !(field.hidden && field.hidden === true) &&
-                    !(field.badge && (field.badge.after || field.badge.before)) &&
-                    !field.iconcolumn &&
-                    !additionalToHide.includes(field.name)
+                    !(field.hidden && field.hidden === true)
         ),
-        collection?.groupFields.map((x) => x.name) || []
     );
-
-    $: iconcolumns = fields.filter((field) => field.iconcolumn);
-
-    $: badges = fields.filter((field) => field.badge);
-
-    $: if (collection?.id && sort !== -1 && filter !== -1) {
-        load(1);
-    }
-
-    $: canLoadMore = lastTotal >= perPage;
-
-    $: totalBulkSelected = Object.keys(bulkSelected).length;
-
-    $: areAllRecordsSelected = records.length && totalBulkSelected === records.length;
 
     $: if (hiddenColumns !== -1) {
         updateStoredHiddenColumns();
     }
 
-    $: hasCreated = !isView || (records.length > 0 && typeof records[0].created != "undefined");
-
-    $: hasUpdated = !isView || (records.length > 0 && typeof records[0].updated != "undefined");
-
+    // Fields that are selectable in the "Hide/Show columns panel"
     $: collumnsToHide = [].concat(
+        { id: "@id", name: "ID" },
         isAuth
             ? [
                   { id: "@username", name: "username" },
@@ -101,14 +79,30 @@
             : [],
         fields
             .filter((x) => 
-                !(x.badge && (x.badge.after || x.badge.before)) && 
                 !(x.hidden && x.hidden === true))
             .map((f) => {
                 return { id: f.id, name: f.friendlyName ?? f.name };
             }),
         hasCreated ? { id: "@created", name: "Erstellt" } : [],
-        hasUpdated ? { id: "@updated", name: "Bearbeitet" } : []
+        hasUpdated ? { id: "@updated", name: "Bearbeitet" } : [],
     );
+
+    $: if (collection?.id && sort !== -1 && filter !== -1) {
+        load(1);
+    }
+
+    // if there is more data to load
+    $: canLoadMore = lastTotal >= perPage;
+
+    // count of selected objects
+    $: totalBulkSelected = Object.keys(bulkSelected).length;
+
+    // if all records are selected
+    $: areAllRecordsSelected = records.length && totalBulkSelected === records.length;
+
+    
+    $: hasCreated = !isView || (records.length > 0 && typeof records[0].created != "undefined");
+    $: hasUpdated = !isView || (records.length > 0 && typeof records[0].updated != "undefined");
 
     function updateStoredHiddenColumns() {
         if (!collection?.id) {
@@ -151,6 +145,8 @@
         }
     }
 
+
+    // Basic load function
     export async function load(page = 1, breakTasks = true) {
         if (!collection?.id) {
             return;
@@ -181,7 +177,9 @@
         const fallbackSearchFields = CommonHelper.getAllCollectionIdentifiers(collection);
 
         const listFields = editorFields
+            // Getting just 200 characters of an "Editor field"
             .map((f) => f.name + ":excerpt(200)")
+            // Getting & expanding relational Fields
             .concat(relFields.map((field) => "expand." + field.name + ".*:excerpt(200)"));
         if (listFields.length) {
             listFields.unshift("*");
@@ -204,6 +202,8 @@
                 isLoading = false;
                 currentPage = result.page;
                 lastTotal = result.items.length;
+
+                // LOAD event
                 dispatch("load", records.concat(result.items));
 
                 // mark the records as "partial" because of the excerpt
@@ -284,10 +284,6 @@
         confirm(msg, deleteSelected);
     }
 
-    function getBadge(fieldName, property) {
-        return badges.filter((f) => f.badge?.[property] && f.badge?.[property] === fieldName);
-    }
-
     async function deleteSelected() {
         if (isDeleting || !totalBulkSelected || !collection?.id) {
             return;
@@ -346,6 +342,7 @@
                                 } else {
                                     CommonHelper.pushUnique(hiddenColumns, column.id);
                                 }
+                                // Here the local store save needs to be triggered by a set:
                                 hiddenColumns = hiddenColumns;
                             }}
                         />
@@ -378,7 +375,7 @@
                     </th>
                 {/if}
 
-                {#if iconcolumns.length}
+                <!-- {#if iconcolumns.length}
                 {#each iconcolumns as iconcolumn (iconcolumn.name)}
                     {#if !hiddenColumns.includes(iconcolumn.id)}
                     <th class="icon-col min-width">
@@ -387,16 +384,16 @@
                     </th>
                     {/if}
                 {/each}
-                {/if}
+                {/if} -->
 
-                <!-- {#if !hiddenColumns.includes("@id")}
+                {#if !hiddenColumns.includes("@id")}
                     <SortHeader class="col-type-text col-field-id" name="id" bind:sort>
                         <div class="col-header-content">
                             <i class={CommonHelper.getFieldTypeIcon("primary")} />
                             <span class="txt">id</span>
                         </div>
                     </SortHeader>
-                {/if} -->
+                {/if}
 
                 {#if isAuth}
                     {#if !hiddenColumns.includes("@username")}
@@ -482,7 +479,7 @@
                         </td>
                     {/if}
 
-                    {#if iconcolumns.length}
+                    <!-- {#if iconcolumns.length}
                     {#each iconcolumns as iconcolumn (iconcolumn.name)}
                     {#if !hiddenColumns.includes(iconcolumn.id)}
                         <td class="icon-col min-width">
@@ -493,9 +490,9 @@
                         </td>
                     {/if}
                     {/each}
-                    {/if}
+                    {/if} -->
 
-                    <!-- {#if !hiddenColumns.includes("@id")}
+                    {#if !hiddenColumns.includes("@id")}
                         <td class="col-type-text col-field-id">
                             <div class="flex flex-gap-5">
                                 <div class="label">
@@ -518,7 +515,7 @@
                                 {/if}
                             </div>
                         </td>
-                    {/if} -->
+                    {/if}
 
                     {#if isAuth}
                         {#if !hiddenColumns.includes("@username")}
@@ -547,7 +544,7 @@
 
                     {#each visibleFields as field (field.name)}
                         <td class="col-type-{field.type} col-field-{field.name}">
-                            {#each getBadge(field.name , "before") as b (b.name)}
+                            <!-- {#each getBadge(field.name , "before") as b (b.name)}
                                 {#if b.type === "bool" && record?.[b.name] === true}
                                     <div class="badge" use:tooltip={b.badge.tooltip ?? b.friendlyName ?? b.name}>
                                         {#if b.badge.icon}
@@ -558,11 +555,11 @@
                                         {/if}
                                     </div>
                                 {/if}
-                            {/each}
+                            {/each} -->
 
                             <RecordFieldValue short {record} {field} />
 
-                            {#each getBadge(field.name , "after") as b (b.name)}
+                            <!-- {#each getBadge(field.name , "after") as b (b.name)}
                                 {#if b.type === "bool" && record?.[b.name] === true}
                                     <div class="badge" use:tooltip={b.badge.tooltip ?? b.friendlyName ?? b.name}>
                                         {#if b.badge.icon}
@@ -573,7 +570,7 @@
                                         {/if}
                                     </div>
                                 {/if}
-                            {/each}
+                            {/each} -->
                         </td>
                     {/each}
 

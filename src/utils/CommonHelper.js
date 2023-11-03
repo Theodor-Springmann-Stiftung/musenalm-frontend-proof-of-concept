@@ -1,4 +1,5 @@
 import { DateTime } from "luxon";
+import collections_viewdata from "@/collections_viewdata";
 
 const imageExtensions = [
    ".jpg", ".jpeg", ".png", ".svg",
@@ -1334,6 +1335,14 @@ export default class CommonHelper {
             }
         }
         return nc;
+    }
+
+    static loadViewDataOf(collection) {
+        return collections_viewdata.filter((x).name === collection.name)?[0];
+    }
+
+    static loadIDOfField(name, collection) {
+        return collection.filter(())
     }
 
 

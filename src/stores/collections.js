@@ -1,7 +1,6 @@
 import { writable } from "svelte/store";
 import ApiClient    from "@/utils/ApiClient";
 import CommonHelper from "@/utils/CommonHelper";
-import collections_viewdata from "@/collections_viewdata";
 
 export const collections                    = writable([]);
 export const userCollection                 = writable([]);
@@ -39,16 +38,15 @@ export async function loadCollections(activeId = null) {
 
     try {
         let result = await ApiClient.send('/api_ext/collections');
-        let sorted = CommonHelper.sortCollections(result);
-        let items = CommonHelper.mergeCollection(sorted.base, collections_viewdata);
-        collections.set(items);
-        pageCollections.set(sorted.page);
+        let items = CommonHelper.sortCollections(result);
+        collections.set(items.base);
+        pageCollections.set(items.page);
 
-        const item = activeId && CommonHelper.findByKey(items, "id", activeId);
+        const item = activeId && CommonHelper.findByKey(items.base, "id", activeId);
         if (item) {
             activeCollection.set(item);
-        } else if (items.length) {
-            activeCollection.set(items[0]);
+        } else if (items.base.length) {
+            activeCollection.set(items.base[0]);
         }
 
         refreshProtectedFilesCollectionsCache();
