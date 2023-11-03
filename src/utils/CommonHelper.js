@@ -1337,12 +1337,15 @@ export default class CommonHelper {
         return nc;
     }
 
+
+
+    // TODO this is not safe
     static loadViewDataOf(collection) {
-        return collections_viewdata.filter((x).name === collection.name)?[0];
+        return collections_viewdata.filter((x) => x.name === collection.name)[0];
     }
 
-    static loadIDOfField(name, collection) {
-        return collection.filter(())
+    static loadIDOfField(name, fields) {
+        return fields.filter((x) => x.name === name)[0];
     }
 
 

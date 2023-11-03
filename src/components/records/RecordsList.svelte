@@ -604,7 +604,7 @@
                                 <i class="ri-pencil-fill" use:tooltip={"Bearbeiten"} />
                             </button>
 
-                            {#if crossReferences && crossReferences.length}
+                            <!-- {#if crossReferences && crossReferences.length}
                                 {#each crossReferences as cr}
                                     <a
                                         type="button"
@@ -620,7 +620,7 @@
                                         <i class={cr.icon} />
                                     </a>
                                 {/each}
-                            {/if}
+                            {/if} -->
                         </div>
                     </td>
                 </tr>

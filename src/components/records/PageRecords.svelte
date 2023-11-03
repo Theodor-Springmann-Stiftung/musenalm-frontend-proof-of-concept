@@ -7,8 +7,7 @@
         activeCollection,
         isCollectionsLoading,
         loadCollections,
-        changeActiveCollectionById,
-        crossReferences
+        changeActiveCollectionById
     } from "@/stores/collections";
     import { pageTitle } from "@/stores/app";
     import PageWrapper from "@/components/base/PageWrapper.svelte";
@@ -189,7 +188,6 @@
             collection={$activeCollection}
             bind:filter
             bind:sort
-            crossReferences={$crossReferences}
             on:select={(e) => {
                 updateQueryParams({
                     recordId: e.detail.id,
