@@ -39,14 +39,15 @@ export async function loadCollections(activeId = null) {
     try {
         let result = await ApiClient.send('/api_ext/collections');
         let items = CommonHelper.sortCollections(result);
-        collections.set(items.base);
-        pageCollections.set(items.page);
+        let c = CommonHelper.loadMergeViewDataOfAll(items.base);
+        collections.set(c);
+        pageCollections.set(CommonHelper.loadMergeViewDataOfAll(items.page));
 
-        const item = activeId && CommonHelper.findByKey(items.base, "id", activeId);
+        const item = activeId && CommonHelper.findByKey(c, "id", activeId);
         if (item) {
             activeCollection.set(item);
-        } else if (items.base.length) {
-            activeCollection.set(items.base[0]);
+        } else if (c.length) {
+            activeCollection.set(c[0]);
         }
 
         refreshProtectedFilesCollectionsCache();

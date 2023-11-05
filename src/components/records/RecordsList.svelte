@@ -52,16 +52,18 @@
     $: editorFields = fields.filter((field) => field.type === "editor");
     $: relFields = fields.filter((field) => field.type === "relation");
 
-    // ViewData
-    $: viewdata = collection ? CommonHelper.loadViewDataOf(collection) : {};
-
     // Columns that are visible
     $: visibleFields = [].concat(
-        fields.filter(
-            (field) =>
-                    !hiddenColumns.includes(field.id) &&
-                    !(field.hidden && field.hidden === true)
-        ),
+        // viewdata.iconcolumns ?
+        //     viewdata.iconcolumns.filter(
+        //         (field) =>
+        //             !hiddenColumns.includes(field.id) &&
+        //             !(field.hidden && field.hidden === true)
+        //     )
+        //     : [],
+        collection.columns.filter(
+            (field) => !hiddenColumns.includes(field.id) && !(field.hidden && field.hidden === true)
+        )
     );
 
     $: if (hiddenColumns !== -1) {
@@ -71,20 +73,26 @@
     // Fields that are selectable in the "Hide/Show columns panel"
     $: collumnsToHide = [].concat(
         { id: "@id", name: "ID" },
+        collection.iconcolumns
+            ? collection.iconcolumns
+                  .filter((field) => !(field.hidden && field.hidden === true))
+                  .map((f) => {
+                      return { id: f.id, name: f.friendlyName ?? f.name };
+                  })
+            : [],
         isAuth
             ? [
                   { id: "@username", name: "username" },
                   { id: "@email", name: "email" },
               ]
             : [],
-        fields
-            .filter((x) => 
-                !(x.hidden && x.hidden === true))
+        collection.columns
+            .filter((x) => !(x.hidden && x.hidden === true))
             .map((f) => {
                 return { id: f.id, name: f.friendlyName ?? f.name };
             }),
         hasCreated ? { id: "@created", name: "Erstellt" } : [],
-        hasUpdated ? { id: "@updated", name: "Bearbeitet" } : [],
+        hasUpdated ? { id: "@updated", name: "Bearbeitet" } : []
     );
 
     $: if (collection?.id && sort !== -1 && filter !== -1) {
@@ -100,7 +108,6 @@
     // if all records are selected
     $: areAllRecordsSelected = records.length && totalBulkSelected === records.length;
 
-    
     $: hasCreated = !isView || (records.length > 0 && typeof records[0].created != "undefined");
     $: hasUpdated = !isView || (records.length > 0 && typeof records[0].updated != "undefined");
 
@@ -144,7 +151,6 @@
             }
         }
     }
-
 
     // Basic load function
     export async function load(page = 1, breakTasks = true) {
@@ -299,11 +305,7 @@
         return Promise.all(promises)
             .then(() => {
                 addSuccessToast(
-                    `${
-                        totalBulkSelected === 1
-                            ? "Der Datensatz wurde"
-                            : "Die Datensätze wurden"
-                    } gelöscht.`
+                    `${totalBulkSelected === 1 ? "Der Datensatz wurde" : "Die Datensätze wurden"} gelöscht.`
                 );
 
                 dispatch("delete", bulkSelected);
@@ -375,19 +377,23 @@
                     </th>
                 {/if}
 
-                <!-- {#if iconcolumns.length}
-                {#each iconcolumns as iconcolumn (iconcolumn.name)}
-                    {#if !hiddenColumns.includes(iconcolumn.id)}
+                {#if collection.iconcolumns && collection.iconcolumns.length}
                     <th class="icon-col min-width">
-                        <i class="{iconcolumn.iconcolumn.icon}"
-                        use:tooltip={iconcolumn.iconcolumn.tooltip}/>
+                        <div class="icon-col-icons">
+                        {#each collection.iconcolumns as iconcolumn (iconcolumn.field)}
+                            {#if !hiddenColumns.includes(iconcolumn.id)}
+                                <i
+                                    class={iconcolumn.icon}
+                                    use:tooltip={iconcolumn.tooltip ?? iconcolumn.field}
+                                />
+                            {/if}
+                        {/each}
+                    </div>
                     </th>
-                    {/if}
-                {/each}
-                {/if} -->
+                {/if}
 
                 {#if !hiddenColumns.includes("@id")}
-                    <SortHeader class="col-type-text col-field-id" name="id" bind:sort>
+                    <SortHeader class="col-type-text col-field-id small-column" name="id" bind:sort>
                         <div class="col-header-content">
                             <i class={CommonHelper.getFieldTypeIcon("primary")} />
                             <span class="txt">id</span>
@@ -416,7 +422,7 @@
 
                 {#each visibleFields as field (field.name)}
                     <SortHeader
-                        class="col-type-{field.type} col-field-{field.name}"
+                        class="col-type-{field.type} col-field-{field.name} {field.class ?? field.class}"
                         name={field.name}
                         bind:sort
                     >
@@ -479,21 +485,25 @@
                         </td>
                     {/if}
 
-                    <!-- {#if iconcolumns.length}
-                    {#each iconcolumns as iconcolumn (iconcolumn.name)}
-                    {#if !hiddenColumns.includes(iconcolumn.id)}
+                    {#if collection.iconcolumns && collection.iconcolumns.length}
                         <td class="icon-col min-width">
-                            {#if record?.[iconcolumn.name]}
-                                <i class="{iconcolumn.iconcolumn.icon}"
-                                use:tooltip={iconcolumn.iconcolumn.tooltip}/>
-                            {/if}
+                            <div class="icon-col-icons">
+                            {#each collection.iconcolumns as iconcolumn (iconcolumn.field)}
+                                {#if !hiddenColumns.includes(iconcolumn.id)}
+                                    {#if record?.[iconcolumn.field]}
+                                        <i
+                                            class={iconcolumn.icon}
+                                            use:tooltip={iconcolumn.tooltip ?? iconcolumn.field}
+                                        />
+                                    {/if}
+                                {/if}
+                            {/each}
+                        </div>
                         </td>
                     {/if}
-                    {/each}
-                    {/if} -->
 
                     {#if !hiddenColumns.includes("@id")}
-                        <td class="col-type-text col-field-id">
+                        <td class="col-type-text col-field-id small-column">
                             <div class="flex flex-gap-5">
                                 <div class="label">
                                     <CopyIcon value={record.id} />
@@ -543,34 +553,48 @@
                     {/if}
 
                     {#each visibleFields as field (field.name)}
-                        <td class="col-type-{field.type} col-field-{field.name}">
-                            <!-- {#each getBadge(field.name , "before") as b (b.name)}
-                                {#if b.type === "bool" && record?.[b.name] === true}
-                                    <div class="badge" use:tooltip={b.badge.tooltip ?? b.friendlyName ?? b.name}>
-                                        {#if b.badge.icon}
-                                            <i class="{b.badge.icon} txt-sm txt-success" />
+                        <td class="col-type-{field.type} col-field-{field.name} {field.class ?? field.class}">
+                            {#if field.fields}
+                                <div class="col-type-multiple">
+                                    {#each field.fields as f (f.name)}
+                                        {#if record?.[f.field] && record?.[f.field].length}
+                                            <RecordFieldValue short {record} field={f} multifield={true} />
                                         {/if}
-                                        {#if b.badge.text}
-                                            {b.badge.text}
+                                    {/each}
+                                </div>
+                            {:else}
+                                <RecordFieldValue short {record} {field} />
+                            {/if}
+                            {#if field.badge}
+                                {#if field.badge.type === "bool" && record?.[field.badge.field] === true}
+                                    <div
+                                        class="badge"
+                                        use:tooltip={field.badge.tooltip ??
+                                            field.badge.friendlyName ??
+                                            field.badge.field}
+                                    >
+                                        {#if field.badge.icon}
+                                            <i class="{field.badge.icon} txt-sm txt-success" />
+                                        {/if}
+                                        {#if field.badge.text}
+                                            {field.badge.text}
                                         {/if}
                                     </div>
                                 {/if}
-                            {/each} -->
-
-                            <RecordFieldValue short {record} {field} />
-
-                            <!-- {#each getBadge(field.name , "after") as b (b.name)}
-                                {#if b.type === "bool" && record?.[b.name] === true}
-                                    <div class="badge" use:tooltip={b.badge.tooltip ?? b.friendlyName ?? b.name}>
-                                        {#if b.badge.icon}
-                                            <i class="{b.badge.icon} txt-sm txt-success" />
+                                {#if field.badge.type === "select" && record?.[field.badge.field] && record?.[field.badge.field] !== ""}
+                                    <div
+                                        class="badge"
+                                        use:tooltip={field.badge.tooltip ??
+                                            field.badge.friendlyName ??
+                                            field.badge.field}
+                                    >
+                                        {#if field.badge.icon}
+                                            <i class="{field.badge.icon} txt-sm txt-success" />
                                         {/if}
-                                        {#if b.badge.text}
-                                            {b.badge.text}
-                                        {/if}
+                                        {record?.[field.badge.field]}
                                     </div>
                                 {/if}
-                            {/each} -->
+                            {/if}
                         </td>
                     {/each}
 
@@ -604,23 +628,26 @@
                                 <i class="ri-pencil-fill" use:tooltip={"Bearbeiten"} />
                             </button>
 
-                            <!-- {#if crossReferences && crossReferences.length}
-                                {#each crossReferences as cr}
+                            {#if collection.crossReferences && collection.crossReferences.length}
+                                {#each collection.crossReferences as cr}
                                     <a
                                         type="button"
-                                        aria-label="verküpfte {cr.friendlyName ?? cr.table}"
-                                        use:tooltip={cr.friendlyName ?? cr.table}
+                                        aria-label="verküpfte {cr.tooltip ?? cr.table}"
+                                        use:tooltip={cr.tooltip ?? cr.table}
                                         class="btn btn-sm btn-transparent p-0"
-                                        href="/collections?collectionId={cr.id}&filter={CommonHelper.createFilterLink(
+                                        href="/collections?collectionId={CommonHelper.getCollectionIDByName(
+                                            $collections,
+                                            cr.table
+                                        )}&filter={CommonHelper.createFilterLink(
                                             record.id,
                                             cr.fields
-                                        )}&sort={cr.sort ?? "-created"}"
+                                        )}&sort={cr.sort ?? '-created'}"
                                         use:link
                                     >
                                         <i class={cr.icon} />
                                     </a>
                                 {/each}
-                            {/if} -->
+                            {/if}
                         </div>
                     </td>
                 </tr>

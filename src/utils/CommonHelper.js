@@ -1310,44 +1310,66 @@ export default class CommonHelper {
     }
 
     /**
-     * Merges two collection arrays to enrich collection data.
+     * Merges a collection array into viewdata array to make info available
+     * on the viewdata object.
      *
      * @param  {Array} collections
      * @param  {Array} usercollections
      * @return {Array}
      */
-    static mergeCollection(collections = [], usercollections = []) {
-        const nc = [];
-        for (const collection of collections) {
-            let un = usercollections.filter((x) => x.name === collection.name);
-            if (un && un.length > 0) {
-                if (un[0].schema) {
-                    for (const us of un[0].schema) {
-                        let ns  = collection.schema.findIndex((x) => x.name === us.name);
-                        if (ns >= 0) {
-                            collection.schema[ns] = {...collection.schema[ns], ...us};
-                        }
-                    }
-                }
-                nc.push({...un[0],...collection});
-            } else {
-                nc.push(collection)
+    static mergeCollection(collection = {}, viewdata = {}) {
+        if (!collection || !viewdata || !collection.schema) return {}
+        if (viewdata.iconcolumns) {
+            for (let i = 0; i< viewdata.iconcolumns.length; i++) {
+                viewdata.iconcolumns[i] = {...viewdata.iconcolumns[i], ...this.getFieldByName(collection.schema, viewdata.iconcolumns[i].field)};
             }
         }
-        return nc;
+        if (viewdata.columns) {
+            for (let i = 0; i< viewdata.columns.length; i++) {
+                if (viewdata.columns[i].field) {
+                    viewdata.columns[i] = {...viewdata.columns[i], ...this.getFieldByName(collection.schema, viewdata.columns[i].field)};
+                } else if (viewdata.columns[i].fields) {
+                    if (viewdata.columns[i].fields.length) {
+                        viewdata.columns[i] = {...viewdata.columns[i], ...this.getFieldByName(collection.schema, viewdata.columns[i].fields[0].field)};
+                    }
+                    for (let j = 0; j < viewdata.columns[i].fields.length; j++) {
+                        viewdata.columns[i].fields[j] = {...viewdata.columns[i].fields[j], ...this.getFieldByName(collection.schema, viewdata.columns[i].fields[j].field)};
+                    }
+                } 
+                if (viewdata.columns[i].badge) {
+                    viewdata.columns[i].badge = {...viewdata.columns[i].badge, ...this.getFieldByName(collection.schema, viewdata.columns[i].badge.field)}
+                }
+            }
+        }
+        viewdata = {...collection, ...viewdata}
+        return viewdata;
     }
 
 
+    // TODO these are all not safe
+    static getFieldByName(schmemafields = [], name = "") {
+        return schmemafields?.find((x) => x.name === name);
+    }
 
-    // TODO this is not safe
     static loadViewDataOf(collection) {
         return collections_viewdata.filter((x) => x.name === collection.name)[0];
     }
 
-    static loadIDOfField(name, fields) {
-        return fields.filter((x) => x.name === name)[0];
+    static loadMergeViewDataOf(collection) {
+        return this.mergeCollection(collection, this.loadViewDataOf(collection));
     }
 
+    static loadMergeViewDataOfAll(collections) {
+        let r = [];
+        for (let c of collections) {
+            r.push(this.loadMergeViewDataOf(c));
+        }
+        return r;
+    }
+
+    static getCollectionIDByName(collections, name) {
+        return collections.find((x) => x.name === name).id;
+    }
 
     /**
      * Merges two collection arrays to enrich collection data.

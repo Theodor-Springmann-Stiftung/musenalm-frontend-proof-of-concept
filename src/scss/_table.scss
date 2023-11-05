@@ -125,10 +125,9 @@ table {
         flex-wrap: nowrap;
         gap: 5px;
         .txt {
-            max-width: 140px;
             white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
+            // overflow: hidden;
+            // text-overflow: ellipsis;
         }
     }
 
@@ -191,6 +190,15 @@ table {
         max-width: 300px;
         min-width: 20rem;
     }
+    .col-type-text.small-column {
+        max-width: 300px;
+        min-width: 12rem;
+    }
+    .col-type-text.mid-column {
+        max-width: 300px;
+        min-width: 16rem;
+    }
+    
     .col-type-editor {
         min-width: 300px;
     }
@@ -206,6 +214,11 @@ table {
     }
     .col-type-number {
         white-space: nowrap;
+    }
+    .col-type-relation .col-type-multiple {
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
     }
 
     // field name specific columns
@@ -353,8 +366,19 @@ table {
 
     .icon-col {
         position: relative;
-        padding-left: 3px;
-        padding-right: 3px;
+        padding-left: 0px;
+        padding-right: 16px;
+    }
+
+    .icon-col .icon-col-icons {
+        display: flex;
+        flex-wrap: nowrap;
+        flex-direction: row;
+        gap: 5px;
+    }
+
+    thead .icon-col .icon-col-icons {
+        gap: 8px;
     }
 
     .col-type-action {
@@ -386,4 +410,36 @@ table {
             box-shadow: 0px 2px 5px 0px var(--shadowColor);
         }
     }
+}
+
+.multifield-label {
+    padding: 0 !important;
+    min-height: unset;
+    line-height: unset;
+    gap: 0 !important;
+    font-size: 80%;
+    background-color: var(--baseAlt2Color) !important;
+}
+
+.multifield-label .multifield-desc {
+    font-style: italic;
+    border-right: 2px solid var(--baseColor);
+    padding-left: 11px;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    padding-right: 7px;
+    background-color: var(--baseAlt1Color) !important;
+    border-top-left-radius: 30px;
+    border-bottom-left-radius: 30px;
+}
+
+.multifield-label .multifield-info {
+    padding-left: 7px;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    padding-right: 11px;
+}
+
+.multifield-label .multifield-info .record-info {
+    vertical-align: baseline !important;
 }

@@ -10,6 +10,7 @@
     export let record;
     export let field;
     export let short = false;
+    export let multifield = false;
 
     $: rawValue = record?.[field.name];
 </script>
@@ -17,7 +18,7 @@
 {#if field.type === "json"}
     {@const stringifiedJson = CommonHelper.trimQuotedValue(JSON.stringify(rawValue)) || '""'}
     {#if short}
-        <span class="txt ">
+        <span class="txt">
             {CommonHelper.truncate(stringifiedJson)}
         </span>
     {:else}
@@ -28,7 +29,7 @@
             <CopyIcon value={JSON.stringify(rawValue, null, 2)} />
         {/if}
     {/if}
-{:else if CommonHelper.isEmpty(rawValue)}
+{:else if field.type !== "relation" && CommonHelper.isEmpty(rawValue)}
     <span class="txt-hint">N/A</span>
 {:else if field.type === "bool"}
     <span class="txt">{rawValue ? "Ja" : "Nein"}</span>
@@ -83,12 +84,23 @@
     {@const relations = CommonHelper.toArray(rawValue)}
     {@const expanded = CommonHelper.toArray(record?.expand?.[field.name])}
     {@const relLimit = short ? 20 : 500}
-    <div class="inline-flex">
+    <div class="inline-flex label-list">
         {#if expanded.length}
             {#each expanded.slice(0, relLimit) as item, i (i + item)}
-                <span class="label">
-                    <RecordInfo record={item} />
-                </span>
+                {#if multifield}
+                    <span class="label multifield-label">
+                        <span class="multifield-desc">
+                            {field.friendlyName ?? field.name}
+                        </span>
+                        <span class="multifield-info">
+                            <RecordInfo record={item} />
+                        </span>
+                    </span>
+                {:else}
+                    <span class="label">
+                        <RecordInfo record={item} />
+                    </span>
+                {/if}
             {/each}
         {:else}
             {#each relations.slice(0, relLimit) as id}

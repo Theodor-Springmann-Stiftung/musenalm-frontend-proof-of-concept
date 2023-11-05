@@ -9,20 +9,25 @@ const collections_viewdata = [
 				"field": "Name",
 				"badge": {
 					"field": "Koerperschaft",
-					"friendlyName": "Körperschaft"
+					"friendlyName": "Körperschaft",
+					"text": "ORG"
 				}
 			},
 			{
-				"field": "Lebensdaten"
+				"field": "Lebensdaten",
+				"class": "small-column"
 			},
 			{
-				"field": "Beruf"
+				"field": "Beruf",
+				"class": "small-column"
 			},
 			{
-				"field": "Nachweis"
+				"field": "Nachweis",
+				"class": "mid-column"
 			},
 			{
-				"field": "Pseudonyme"
+				"field": "Pseudonyme",
+				"class": "mid-column"
 			},
 			{
 				"field": "Anmerkungen"
@@ -80,15 +85,15 @@ const collections_viewdata = [
 					},
 					{
 						"field": "Franzoesischer_Reihentitel",
-						"friendlyName": "frz."
+						"friendlyName": "Frz."
 					},
 					{
 						"field": "Deutscher_Reihentitel",
-						"friendlyName": "dt."
+						"friendlyName": "Dt."
 					},
 					{
 						"field": "Alternatives_Titelblatt",
-						"friendlyName": "alt. Titelblatt"
+						"friendlyName": "Alt. Titelblatt"
 					},
 					{
 						"field": "TA_von",
@@ -101,10 +106,13 @@ const collections_viewdata = [
 				]
 			},
 			{
-				"field": "Jahr"
+				"field": "Jahr",
+				"class": "small-column"
 			},
 			{
-				"field": "Ausgabebezeichnung"
+				"field": "Ausgabebezeichnung",
+				"friendlyName": "Ausgabe",
+				"class": "small-column"
 			},
 			
 			{
@@ -138,13 +146,15 @@ const collections_viewdata = [
 				"friendlyName": "Verlags-/Vertriebsangabe"
 			},
 			{
-				"field": "Nachweis"
+				"field": "Nachweis",
+				"class": "mid-column"
 			},
 			{
 				"field": "Struktur"
 			},
 			{
-				"field": "Norm"
+				"field": "Norm",
+				"class": "small-column"
 			},
 			{
 				"field": "Anmerkungen"
@@ -154,7 +164,8 @@ const collections_viewdata = [
 			},
 			{
 				"field": "Biblio_ID",
-				"friendlyName": "Biblio-Nummer"
+				"friendlyName": "Biblio-Nummer",
+				"class": "small-column"
 			}
 		],
 		"crossReferences": [
@@ -170,13 +181,14 @@ const collections_viewdata = [
 	{
 		"name": "Inhalte",
 		"icon": "ri-file-text-line",
-        "defaultSort": "Band,Objektnummer",
-		"schema": [
+        "defaultSort": "Band.Kurztitel,Objektnummer",
+		"columns": [
 			{
 				"field": "Band"
 			},
 			{
-				"field": "Objektnummer"
+				"field": "Objektnummer",
+				"class": "small-column"
 			},
 			{
 				"field": "Typ"
@@ -186,6 +198,7 @@ const collections_viewdata = [
 			},
 			{
 				"field": "Seite",
+				"class": "small-column",
 				"badge": {
 					"field": "Paginierung"
 				}
@@ -225,12 +238,13 @@ const collections_viewdata = [
 		"name": "Reihentitel",
 		"icon": "ri-organization-chart",
 		"defaultSort": "Titel",
-		"schema": [
+		"columns": [
 			{
 				"field": "Titel"
 			},
 			{
-				"field": "Nachweis"
+				"field": "Nachweis",
+				"class": "mid-column"
 			},
 			{
 				"field": "Anmerkungen"
@@ -248,7 +262,7 @@ const collections_viewdata = [
 	},
 	{
 		"name": "Texte",
-		"schema": [
+		"columns": [
 			{
 				"field": "Titel"
 			},
@@ -262,7 +276,7 @@ const collections_viewdata = [
 	},
 	{
 		"name": "Bilder",
-		"schema": [
+		"columns": [
 			{
 				"field": "Titel"
 			},
@@ -273,7 +287,7 @@ const collections_viewdata = [
 	},
 	{
 		"name": "users",
-		"schema": [
+		"columns": [
 			{
 				"field": "name"
 			},

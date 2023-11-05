@@ -23,7 +23,7 @@
 <a
     href="/collections?collectionId={collection.id}&filter="
     class="sidebar-list-item"
-    title={collection.name}
+    title={collection.friendlyName ?? collection.name}
     class:active={$activeCollection?.id === collection.id}
     use:link
 >

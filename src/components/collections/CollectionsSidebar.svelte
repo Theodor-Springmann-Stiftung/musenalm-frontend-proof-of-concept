@@ -2,7 +2,6 @@
     import { collections, activeCollection, isCollectionsLoading } from "@/stores/collections";
     import PageSidebar from "@/components/base/PageSidebar.svelte";
     import CollectionSidebarItem from "@/components/collections/CollectionSidebarItem.svelte";
-
     const pinnedStorageKey = "@pinnedCollections";
 
     let collectionPanel;

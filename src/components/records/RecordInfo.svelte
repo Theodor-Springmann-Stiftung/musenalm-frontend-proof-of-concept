@@ -16,7 +16,7 @@
 </script>
 
 <div class="record-info">
-    <i
+    <!-- <i
         class="link-hint txt-sm ri-information-line"
         use:tooltip={{
             text: CommonHelper.truncate(
@@ -27,7 +27,7 @@
             class: "code",
             position: "left",
         }}
-    />
+    /> -->
 
     {#each fileDisplayFields as name}
         {@const filenames = CommonHelper.toArray(record[name]).slice(0, 5)}

@@ -512,6 +512,19 @@ a,
     }
 }
 
+.label-list {
+    display: flex;
+    flex-direction: column;
+    gap: 5px !important;
+    text-align: left !important;
+    align-items: flex-start;
+    flex-wrap: unset !important;
+}
+
+.label-list .list {
+
+}
+
 .thumb {
     --thumbSize: 40px;
 
