@@ -38,8 +38,8 @@
         {/each}
     {/each}
 
-    <span class="txt txt-ellipsis">
-        {CommonHelper.truncate(CommonHelper.displayValue(record, textDisplayFields), 70)}
+    <span class="txt txt-ellipsis" use:tooltip={CommonHelper.displayValue(record, textDisplayFields)}>
+        {CommonHelper.truncate(CommonHelper.displayValue(record, textDisplayFields), 60)}
     </span>
 </div>
 
