@@ -62,7 +62,7 @@
         updateQueryParams();
     }
 
-    $: $pageTitle = $activeCollection?.name || "Collections";
+    $: $pageTitle = $activeCollection ? $activeCollection.friendlyName ? $activeCollection.friendlyName : $activeCollection.name : "Sammlungen";
 
     async function showRecordById(recordId) {
         await tick(); // ensure that the reactive component params are resolved
@@ -74,7 +74,7 @@
 
     function reset() {
         selectedCollectionId = $activeCollection?.id;
-        //filter = "";
+        // filter = "";
         sort = $activeCollection.defaultSort ?? "-created";
 
         updateQueryParams({ recordId: null });
@@ -85,20 +85,20 @@
     }
 
     // ensures that the sort fields exist in the collection
+    // collectionFields = all fields in the collection
+    // sortFields = fields this page is currently sorted by
     async function normalizeSort() {
         if (!sort) {
             return; // nothing to normalize
         }
 
         const collectionFields = CommonHelper.getAllCollectionIdentifiers($activeCollection);
-
         const sortFields = sort.split(",").map((f) => {
             if (f.startsWith("+") || f.startsWith("-")) {
                 return f.substring(1);
             }
             return f;
         });
-
         if ($activeCollection.defaultSort) {
             sort = $activeCollection.defaultSort
             return;
@@ -106,7 +106,9 @@
 
         // invalid sort expression or missing sort field
         if (sortFields.filter((f) => collectionFields.includes(f)).length != sortFields.length) {
-            if (collectionFields.includes("created")) {
+            if ($activeCollection?.defaultSort) {
+                sort = $activeCollection.defaultSort
+            } else if (collectionFields.includes("created")) {
                 sort = "-created";
             } else {
                 sort = "";
@@ -151,7 +153,7 @@
         <header class="page-header">
             <nav class="breadcrumbs">
                 <div class="breadcrumb-item">Sammlungen</div>
-                <div class="breadcrumb-item">{$activeCollection.freiendlyname ?? $activeCollection.name}</div>
+                <div class="breadcrumb-item">{$activeCollection.friendlyName ?? $activeCollection.name}</div>
             </nav>
 
             <div class="inline-flex gap-5">

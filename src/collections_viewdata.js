@@ -39,14 +39,16 @@ const collections_viewdata = [
 		"crossReferences": [
             {
                 "table": "Baende",
-                "fields": [ "Verlag", "Druck", "Herausgabe", "Vertrieb" ],
+				"ref": "id",
+                "fields": [ "Verlag.id", "Druck.id", "Herausgabe.id", "Vertrieb.id" ],
                 "sort": "Kurztitel,Jahr",
 				"icon": "ri-book-line",
 				"tooltip": "Bände"
             },
             {
                 "table": "Inhalte",
-                "fields": [ "Geschaffen", "Geschrieben", "Gezeichnet", "Gestochen" ],
+				"ref": "id",
+                "fields": [ "Geschaffen.id", "Geschrieben.id", "Gezeichnet.id", "Gestochen.id" ],
                 "sort": "Band.Kurztitel,Objektnummer",
 				"icon": "ri-file-text-line",
 				"tooltip": "Inhalte"
@@ -73,7 +75,8 @@ const collections_viewdata = [
 				"field": "Kurztitel"
 			},
 			{
-				"friendlyName": "Reihen",
+				"friendlyName": "Reihentitel",
+				"sortProxy": "Bevorzugter_Reihentitel.Titel,Alternativer_Reihentitel.Titel,Franzoesischer_Reihentitel.Titel,Deutscher_Reihentitel.Titel,Alternatives_Titelblatt.Titel,TA_von.Titel,hat_TA.Titel",
 				"fields": [
 					{
 						"field": "Bevorzugter_Reihentitel",
@@ -114,9 +117,9 @@ const collections_viewdata = [
 				"friendlyName": "Ausgabe",
 				"class": "small-column"
 			},
-			
 			{
 				"friendlyName": "Personen/Körperschaften",
+				"sortProxy": "Herausgabe.Name,Verlag.Name,Druck.Name,Vertrieb.Name",
 				"fields": [
 					{
 						"field": "Herausgabe"
@@ -171,7 +174,8 @@ const collections_viewdata = [
 		"crossReferences": [
             {
                 "table": "Inhalte",
-                "fields": [ "Band" ],
+				"ref": "id",
+                "fields": [ "Band.id" ],
 				"sort": "Band.Kurztitel,Objektnummer",
 				"icon": "ri-file-text-line",
 				"tooltip": "Inhalte"
@@ -184,7 +188,8 @@ const collections_viewdata = [
         "defaultSort": "Band.Kurztitel,Objektnummer",
 		"columns": [
 			{
-				"field": "Band"
+				"field": "Band",
+				"sortProxy": "Band.Kurztitel"
 			},
 			{
 				"field": "Objektnummer",
@@ -205,6 +210,7 @@ const collections_viewdata = [
 			},
 			{
 				"friendlyName": "Personen/Körperschaften",
+				"sortProxy": "Geschaffen.Name,Geschrieben.Name,Gezeichnet.Name,Gestochen.Name",
 				"fields": [
 					{
 						"field": "Geschaffen"
@@ -253,7 +259,8 @@ const collections_viewdata = [
         "crossReferences": [
             {
                 "table": "Baende",
-                "fields": [ "Bevorzugter_Reihentitel", "Alternativer_Reihentitel", "Franzoesischer_Reihentitel", "Deutscher_Reihentitel", "Alternatives_Titelblatt", "TA_von", "hat_TA" ],
+				"ref": "id",
+                "fields": [ "Bevorzugter_Reihentitel.id", "Alternativer_Reihentitel.id", "Franzoesischer_Reihentitel.id", "Deutscher_Reihentitel.id", "Alternatives_Titelblatt.id", "TA_von.id", "hat_TA.id" ],
                 "sort": "Jahr,Kurztitel",
 				"icon": "ri-book-line",
 				"tooltip": "Bände"

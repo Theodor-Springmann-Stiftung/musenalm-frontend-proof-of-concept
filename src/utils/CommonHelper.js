@@ -1404,24 +1404,26 @@ export default class CommonHelper {
      * Merges two collection arrays to enrich collection data.
      *
      * @param  {String} id
-     * @param  {Array} list
+     * @param  {Object} crossRef
      * @return {String}
      */
-    static createFilterLink(id, list) {
-        if (!list || !list.length) return "";
+    static createFilterLink(record, crossRef) {
+        if (!record || !record?.[crossRef.ref] || !crossRef || !crossRef.fields || !crossRef.ref) return "";
         let res = "";
         let first = true;
+        let id = record?.[crossRef.ref];
+        let list = crossRef.fields;
         for (const s of list) {
             if (first) {
                 res += s;
-                res += "~\"";
+                res += "?=\"";
                 res += id;
                 res += "\"";
                 first = false;
             } else {
                 res += "||";
                 res += s;
-                res += "~\"";
+                res += "?=\"";
                 res += id;
                 res += "\"";
             }
@@ -1803,6 +1805,31 @@ export default class CommonHelper {
             CommonHelper.pushUnique(result, prefix + field.name);
         }
 
+        return result;
+    }
+
+
+    /**
+     * Returns an array with all public collection identifiers (schema + type specific fields).
+     *
+     * @param  {[type]} collection The collection to extract identifiers from.
+     * @param  {String} prefix     Optional prefix for each found identified.
+     * @return {Array}
+     */
+    static getAdditionalCollectionSearchfields(collection, prefix = "") {
+        if (!collection) {
+            return [];
+        }
+
+        let result = [];
+        
+        if (collection.columns) {
+            for (const col of collection.columns) {
+                if (col.sortProxy) {
+                    result = result.concat(col.sortProxy.split(","));
+                }
+            }
+        }
         return result;
     }
 

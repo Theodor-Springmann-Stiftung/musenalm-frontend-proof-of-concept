@@ -4,6 +4,7 @@
 
     export let name;
     export let sort = "";
+    export let altsort = "";
     export let disable = false;
 
     function toggleSort() {

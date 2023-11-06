@@ -180,7 +180,10 @@
             }
         }
 
-        const fallbackSearchFields = CommonHelper.getAllCollectionIdentifiers(collection);
+        const fallbackSearchFields = [].concat(
+            CommonHelper.getAllCollectionIdentifiers(collection),
+            CommonHelper.getAdditionalCollectionSearchfields(collection)
+        );
 
         const listFields = editorFields
             // Getting just 200 characters of an "Editor field"
@@ -423,7 +426,7 @@
                 {#each visibleFields as field (field.name)}
                     <SortHeader
                         class="col-type-{field.type} col-field-{field.name} {field.class ?? field.class}"
-                        name={field.name}
+                        name={field.sortProxy ?? field.name}
                         bind:sort
                     >
                         <div class="col-header-content">
@@ -639,8 +642,8 @@
                                             $collections,
                                             cr.table
                                         )}&filter={CommonHelper.createFilterLink(
-                                            record.id,
-                                            cr.fields
+                                            record,
+                                            cr
                                         )}&sort={cr.sort ?? '-created'}"
                                         use:link
                                     >
