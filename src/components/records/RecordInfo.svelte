@@ -3,8 +3,14 @@
     import tooltip from "@/actions/tooltip";
     import { collections } from "@/stores/collections";
     import RecordFileThumb from "@/components/records/RecordFileThumb.svelte";
+    import RecordContextMenu from "./RecordContextMenu.svelte";
+    import RecordFieldValue from "./RecordFieldValue.svelte";
+    import { clickOutside } from "@/actions/clickoutside";
 
     export let record;
+    export let menu;
+
+    let contextmenu;
 
     $: collection = $collections?.find((item) => item.id == record?.collectionId);
 
@@ -13,6 +19,8 @@
 
     $: textDisplayFields =
         collection?.schema?.filter((f) => f.presentable && f.type != "file")?.map((f) => f.name) || [];
+
+    $: displayValue = CommonHelper.displayValue(record, textDisplayFields);
 </script>
 
 <div class="record-info">
@@ -38,8 +46,25 @@
         {/each}
     {/each}
 
-    <span class="txt txt-ellipsis" use:tooltip={CommonHelper.displayValue(record, textDisplayFields)}>
-        {CommonHelper.truncate(CommonHelper.displayValue(record, textDisplayFields), 60)}
+    <span
+        class="txt txt-ellipsis"
+        on:click={(_) => {
+            if (contextmenu) {
+                contextmenu.toggle();
+            }
+        }}
+        use:clickOutside
+        on:click_outside|preventDefault={(_) => {
+            if (contextmenu) {
+                contextmenu.hide();
+            }}}
+    >
+        <span use:tooltip={displayValue.length > 60 ? displayValue : ""}>
+            {CommonHelper.truncate(displayValue, 60)}
+        </span>
+        {#if menu}
+            <RecordContextMenu bind:this={contextmenu} {record} {menu} />
+        {/if}
     </span>
 </div>
 

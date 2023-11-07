@@ -15,6 +15,7 @@
     import Scroller from "@/components/base/Scroller.svelte";
     import RecordFieldValue from "@/components/records/RecordFieldValue.svelte";
     import { replace, link } from "svelte-spa-router";
+    import RecordUpsertPanel from "./RecordUpsertPanel.svelte";
 
     const dispatch = createEventDispatcher();
     const sortRegex = /^([\+\-])?(\w+)$/;
@@ -561,12 +562,12 @@
                                 <div class="col-type-multiple">
                                     {#each field.fields as f (f.name)}
                                         {#if record?.[f.field] && record?.[f.field].length}
-                                            <RecordFieldValue short {record} field={f} multifield={true} />
+                                            <RecordFieldValue short {record} field={f} menu={field?.menu ?? null} multifield={true} />
                                         {/if}
                                     {/each}
                                 </div>
                             {:else}
-                                <RecordFieldValue short {record} {field} />
+                                <RecordFieldValue short menu={field?.menu ?? null} {record} {field} />
                             {/if}
                             {#if field.badge}
                                 {#if field.badge.type === "bool" && record?.[field.badge.field] === true}

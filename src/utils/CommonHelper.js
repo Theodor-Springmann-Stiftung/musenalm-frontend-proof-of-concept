@@ -2051,10 +2051,10 @@ export default class CommonHelper {
             return searchTerm;
         }
         
-        searchTerm = searchTerm.replace(/IST NICHT/, "!=");
-        searchTerm = searchTerm.replace(/IST/, "=");
-        searchTerm = searchTerm.replace(/ENTHÄLT NICHT/, "!~");
-        searchTerm = searchTerm.replace(/ENTHÄLT/, "~");
+        searchTerm = searchTerm.replace(/IST NICHT/, "?!=");
+        searchTerm = searchTerm.replace(/IST/, "?=");
+        searchTerm = searchTerm.replace(/ENTHÄLT NICHT/, "?!~");
+        searchTerm = searchTerm.replace(/ENTHÄLT/, "?~");
         searchTerm = searchTerm.replace(/WAHR/, "true");
         searchTerm = searchTerm.replace(/FALSCH/, "false");
 

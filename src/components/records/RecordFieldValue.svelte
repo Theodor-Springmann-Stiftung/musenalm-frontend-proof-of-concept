@@ -11,6 +11,7 @@
     export let field;
     export let short = false;
     export let multifield = false;
+    export let menu;
 
     $: rawValue = record?.[field.name];
 </script>
@@ -92,13 +93,13 @@
                         <span class="multifield-desc">
                             {field.friendlyName ?? field.name}
                         </span>
-                        <span class="multifield-info">
-                            <RecordInfo record={item} />
+                        <span class="multifield-info {menu ? 'multifield-menu' : ''}">
+                            <RecordInfo {menu} record={item} />
                         </span>
                     </span>
                 {:else}
-                    <span class="label">
-                        <RecordInfo record={item} />
+                    <span class="label {menu ? 'multifield-menu' : ''}" >
+                        <RecordInfo {menu} record={item} />
                     </span>
                 {/if}
             {/each}

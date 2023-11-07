@@ -5,9 +5,9 @@
     import Toggler from "@/components/base/Toggler.svelte";
 
     export let id = "";
-    export let noOptionsText = "No options found";
-    export let selectPlaceholder = "- Select -";
-    export let searchPlaceholder = "Search...";
+    export let noOptionsText = "Keine Suchergebnisse";
+    export let selectPlaceholder = "- Auswählen -";
+    export let searchPlaceholder = "Suche...";
     export let items = [];
     export let multiple = false;
     export let disabled = false;
