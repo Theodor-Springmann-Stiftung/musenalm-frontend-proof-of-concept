@@ -50,7 +50,7 @@
                     <div class="context-menu-desc" />
                     <a
                         class="context-menu-text"
-                        href="/collections?collectionId={CommonHelper.getCollectionIDByName(
+                        href="/admin/collections?collectionId={CommonHelper.getCollectionIDByName(
                             $collections,
                             item.table
                         )}&filter={CommonHelper.createFilterLink(record, item)}&sort={item.sort ?? '-created'}"

@@ -8,14 +8,14 @@
 <PageSidebar class="settings-sidebar">
     <div class="sidebar-content">
         <div class="sidebar-title">System</div>
-        <a href="/settings" class="sidebar-list-item" use:active={{ path: "/settings" }} use:link>
+        <a href="/admin/settings" class="sidebar-list-item" use:active={{ path: "/admin/settings" }} use:link>
             <i class="ri-home-gear-line" />
             <span class="txt">Application</span>
         </a>
         <a
-            href="/settings/admins"
+            href="/admin/settings/admins"
             class="sidebar-list-item"
-            use:active={{ path: "/settings/admins/?.*" }}
+            use:active={{ path: "/admin/settings/admins/?.*" }}
             use:link
         >
             <i class="ri-shield-user-line" />

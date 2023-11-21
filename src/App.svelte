@@ -64,31 +64,31 @@
 
             <nav class="main-menu">
                 <a
-                    href="/collections"
+                    href="/admin/collections"
                     class="menu-item"
                     aria-label="Sammlungen"
                     use:link
-                    use:active={{ path: "/collections/?.*", className: "current-route" }}
+                    use:active={{ path: "/admin/collections/?.*", className: "current-route" }}
                     use:tooltip={{ text: "Sammlungen", position: "right" }}
                 >
                     <i class="ri-database-2-line" />
                 </a>
                 <a
-                    href="/texts"
+                    href="/admin/site"
                     class="menu-item"
                     aria-label="Texte & Bilder"
                     use:link
-                    use:active={{ path: "/texts/?.*", className: "current-route" }}
+                    use:active={{ path: "/admin/site/?.*", className: "current-route" }}
                     use:tooltip={{ text: "Texte & Bilder", position: "right" }}
                 >
                     <i class="ri-pages-line" />
                 </a>
                 <a
-                    href="/settings"
+                    href="/admin/settings"
                     class="menu-item"
                     aria-label="Einstellungen"
                     use:link
-                    use:active={{ path: "/settings/?.*", className: "current-route" }}
+                    use:active={{ path: "/admin/settings/?.*", className: "current-route" }}
                     use:tooltip={{ text: "Einstellungen", position: "right" }}
                 >
                     <i class="ri-settings-3-line" />
@@ -101,7 +101,7 @@
                     alt="Avatar"
                 />
                 <Toggler class="dropdown dropdown-nowrap dropdown-upside dropdown-left">
-                    <a href="/settings/admins" class="dropdown-item closable" use:link>
+                    <a href="/admin/settings/admins" class="dropdown-item closable" use:link>
                         <i class="ri-shield-user-line" />
                         <span class="txt">Accountmanagement</span>
                     </a>
@@ -117,7 +117,7 @@
 
     <div class="app-body">
         <Router {routes} on:routeLoading={handleRouteLoading} on:conditionsFailed={handleRouteFailure} />
-
+        
         <Toasts />
     </div>
 </div>

@@ -1,72 +1,110 @@
 <script>
-    import { tick } from "svelte";
+    import { tick, onMount } from "svelte";
     import { replace, querystring } from "svelte-spa-router";
     import PocketBase from "@/utils/ApiClient";
     import CommonHelper from "@/utils/CommonHelper";
     import {
-        pageCollections,
-        collections,
+        pageCollection,
         activeCollection,
         isCollectionsLoading,
         loadCollections,
-        setActiveCollectionByObject,
-    } from "@/stores/collections";
+    } from "@/stores/collections";  
     import { pageTitle } from "@/stores/app";
     import PageWrapper from "@/components/base/PageWrapper.svelte";
     import Searchbar from "@/components/base/Searchbar.svelte";
     import RefreshButton from "@/components/base/RefreshButton.svelte";
     import RecordUpsertPanel from "@/components/records/RecordUpsertPanel.svelte";
-    import RecordPreviewPanel from "@/components/records/RecordPreviewPanel.svelte";
-    import RecordsList from "@/components/records/RecordsList.svelte";
+    import SiteList from "@/components/texts/SiteList.svelte";
     import RecordsCount from "@/components/records/RecordsCount.svelte";
 
-    $pageTitle = "Texte";
+    $pageTitle = "Texte & Bilder";
 
     const queryParams = new URLSearchParams($querystring);
 
-    let collectionSchema = pageCollections[0];
-    let admins = [];
-    let isLoading = false;
+    let collectionSchema = $pageCollection;
+    let items = [];
+    let isLoading = true;
     let recordsCount;
-    let recordsList;
+    let siteList;
     let totalCount = 0;
     let recordUpsertPanel;
-    let recordPreviewPanel;
     let filter = queryParams.get("filter") || "";
-    let sort = queryParams.get("sort") || "-created";
+    let sort = queryParams.get("sort") || "Titel";
 
     $: if (sort !== -1 && filter !== -1) {
         // keep listing params in sync
         const query = new URLSearchParams({ filter, sort }).toString();
-        replace("/texts?" + query);
+        replace("/admin/site?" + query);
+        
+//      load();
+    }
 
-        loadTexts();
+    $: if (!$isCollectionsLoading && queryParams.get("recordId")) {
+        showRecordById(queryParams.get("recordId"));
+    }
+
+
+    onMount(async () => {
+        isLoading = true;
+
+        if (Object.keys($pageCollection).length === 0 && $pageCollection.constructor === Object) {
+            await loadCollections();
+            collectionSchema = $pageCollection;
+        }
+
+        await load();
+        
+
+        console.log(collectionSchema);
+        return () => {
+            items = [];
+        };
+    });
+
+    async function load() {
+        isLoading = true;
+        isLoading = false;
     }
 
     export function loadTexts() {
-        isLoading = true;
-        admins = []; // reset
-
         const normalizedFilter = CommonHelper.normalizeSearchFilter(filter);
-
-        return PocketBase.collection('texts')
-            .getFullList(100, {
-                sort: sort || "-created",
+        return PocketBase.collection('Texte')
+            .getFullList({
+                sort: sort || "Titel",
                 filter: normalizedFilter,
             })
             .then((result) => {
-                admins = result;
-                isLoading = false;
+                // append result array to items array:
+                items = [...items, ...result];               
             })
             .catch((err) => {
                 if (!err?.isAbort) {
                     isLoading = false;
                     console.warn(err);
-                    clearList();
                     ApiClient.error(err, err?.status != 400); // silence filter errors
                 }
             });
     }
+
+    export function loadPictures() {
+        const normalizedFilter = CommonHelper.normalizeSearchFilter(filter);
+        return PocketBase.collection('Bilder')
+            .getFullList({
+                sort: sort || "Titel",
+                filter: normalizedFilter,
+            })
+            .then((result) => {
+                items = [...items, ...result];
+            })
+            .catch((err) => {
+                if (!err?.isAbort) {
+                    isLoading = false;
+                    console.warn(err);
+                    ApiClient.error(err, err?.status != 400); // silence filter errors
+                }
+            });
+    }
+
 
     function updateQueryParams(extra = {}) {
         const queryParams = Object.assign(
@@ -80,17 +118,13 @@
 
         CommonHelper.replaceHashQueryParams(queryParams);
     }
-
-    function clearList() {
-        admins = [];
-    }
 </script>
 
 {#if isLoading}
     <PageWrapper center>
         <div class="placeholder-section m-b-base">
             <span class="loader loader-lg" />
-            <h1>Benutzer werden geladen... </h1>
+            <h1>Texte & Bilder werden geladen... </h1>
         </div>
     </PageWrapper>
 <!-- {:else if !admins.length}
@@ -114,7 +148,7 @@
             <div class="inline-flex gap-5">
                 <RefreshButton
                     on:refresh={() => {
-                        loadTexts();
+                        siteList?.load();
                         recordsCount?.reload();
                     }}
                 />
@@ -139,8 +173,8 @@
 
         <div class="clearfix m-b-sm" />
 
-        <RecordsList
-            bind:this={admins}
+        <SiteList
+            bind:this={siteList}
             collection={collectionSchema}
             bind:filter
             bind:sort
@@ -151,12 +185,7 @@
 
                 let showModel = e.detail._partial ? e.detail.id : e.detail;
 
-                collectionSchema.type === "view"
-                    ? recordPreviewPanel?.show(showModel)
-                    : recordUpsertPanel?.show(showModel);
-            }}
-            on:delete={() => {
-                recordsCount?.reload();
+                recordUpsertPanel?.show(showModel);
             }}
             on:new={() => recordUpsertPanel?.show()}
         />
@@ -188,21 +217,6 @@
             totalCount++;
         }
 
-        recordsList?.reloadLoadedPages();
-    }}
-    on:delete={(e) => {
-        if (!filter || recordsList?.hasRecord(e.detail.id)) {
-            totalCount--;
-        }
-
-        recordsList?.reloadLoadedPages();
-    }}
-/>
-
-<RecordPreviewPanel
-    bind:this={recordPreviewPanel}
-    collection={collectionSchema}
-    on:hide={() => {
-        updateQueryParams({ recordId: null });
+        siteList?.load(1);
     }}
 />

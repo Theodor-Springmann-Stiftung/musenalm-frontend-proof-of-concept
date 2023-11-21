@@ -12,7 +12,6 @@
         // generate the tooltip text as getter to speed up the initial load
         // in case the component is used with large number of items
         get text() {
-            console.log(date);
             return CommonHelper.formatToLocalDate(date) + " Local";
         },
     };

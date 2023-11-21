@@ -6,7 +6,7 @@
 
     function handler() {
         if (PocketBase.authStore.isValid) {
-            replace("/collections");
+            replace("/admin/collections");
         } else {
             PocketBase.logout(true);
         }

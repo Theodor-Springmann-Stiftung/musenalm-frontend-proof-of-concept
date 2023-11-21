@@ -1,14 +1,15 @@
 import { writable } from "svelte/store";
-import ApiClient    from "@/utils/ApiClient";
+import ApiClient from "@/utils/ApiClient";
 import CommonHelper from "@/utils/CommonHelper";
+import page_viewdata from "@/page_viewdata";
 
-export const collections                    = writable([]);
-export const userCollection                 = writable([]);
-export const pageCollections                = writable([]);
-export const activeCollection               = writable({});
-export const isCollectionsLoading           = writable(false);
+export const collections = writable([]);
+export const userCollection = writable([]);
+export const pageCollection = writable({});
+export const activeCollection = writable({});
+export const isCollectionsLoading = writable(false);
 export const protectedFilesCollectionsCache = writable({});
-export const crossReferences                = writable([]);
+export const crossReferences = writable([]);
 
 export function changeActiveCollectionById(collectionId) {
     collections.update((list) => {
@@ -41,7 +42,10 @@ export async function loadCollections(activeId = null) {
         let items = CommonHelper.sortCollections(result);
         let c = CommonHelper.loadMergeViewDataOfAll(items.base);
         collections.set(c);
-        pageCollections.set(CommonHelper.loadMergeViewDataOfAll(items.page));
+
+        let i = CommonHelper.mergeCollection(items.page[0], page_viewdata);
+        let m = CommonHelper.mergeCollection(items.page[1], i);
+        pageCollection.set(m);
 
         const item = activeId && CommonHelper.findByKey(c, "id", activeId);
         if (item) {

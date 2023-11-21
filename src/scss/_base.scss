@@ -981,6 +981,20 @@ a.thumb:not(.thumb-active) {
             }
         }
     }
+    .sidebar-head-title {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        width: 100%;
+        margin: var(--smSpacing) 0 var(--xsSpacing);
+        font-weight: 600;
+        font-size: 1rem;
+        line-height: var(--smLineHeight);
+        color: var(--txtHintColor);
+        .label {
+            font-weight: normal;
+        }
+    }
     .sidebar-title {
         display: flex;
         align-items: center;

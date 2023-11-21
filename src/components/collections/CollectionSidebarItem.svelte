@@ -21,7 +21,7 @@
 </script>
 
 <a
-    href="/collections?collectionId={collection.id}&filter="
+    href="/admin/collections?collectionId={collection.id}&filter="
     class="sidebar-list-item"
     title={collection.friendlyName ?? collection.name}
     class:active={$activeCollection?.id === collection.id}

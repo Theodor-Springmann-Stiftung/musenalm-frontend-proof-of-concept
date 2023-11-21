@@ -241,6 +241,7 @@ const collections_viewdata = [
             {
                 field: "Objektnummer",
                 class: "small-column",
+                hideTitle: true,
             },
             {
                 field: "Typ",
@@ -337,31 +338,6 @@ const collections_viewdata = [
                 sort: "Jahr,Kurztitel",
                 icon: "ri-book-line",
                 tooltip: "Bände",
-            },
-        ],
-    },
-    {
-        name: "Texte",
-        columns: [
-            {
-                field: "Titel",
-            },
-            {
-                field: "Stichworte",
-            },
-            {
-                field: "Text",
-            },
-        ],
-    },
-    {
-        name: "Bilder",
-        columns: [
-            {
-                field: "Titel",
-            },
-            {
-                field: "Bilder",
             },
         ],
     },

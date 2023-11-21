@@ -61,7 +61,7 @@
 </script>
 
 <PageSidebar class="collection-sidebar">
-    <header class="sidebar-header">
+    <!-- <header class="sidebar-header">
         <div class="form-field search" class:active={hasSearch}>
             <div class="form-field-addon">
                 <button
@@ -80,6 +80,10 @@
                 bind:value={searchTerm}
             />
         </div>
+    </header> -->
+
+    <header class="sidebar-header">
+        <div class="sidebar-head-title">Sammlungen</div>
     </header>
 
     <hr class="m-t-5 m-b-xs" />

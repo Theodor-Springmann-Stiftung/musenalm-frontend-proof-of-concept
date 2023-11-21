@@ -432,7 +432,9 @@
                     >
                         <div class="col-header-content">
                             <i class={CommonHelper.getFieldTypeIcon(field.type)} />
+                            {#if !field.hideTitle}
                             <span class="txt">{field.friendlyName ?? field.name}</span>
+                            {/if}
                         </div>
                     </SortHeader>
                 {/each}
@@ -639,7 +641,7 @@
                                         aria-label="verküpfte {cr.tooltip ?? cr.table}"
                                         use:tooltip={cr.tooltip ?? cr.table}
                                         class="btn btn-sm btn-transparent p-0"
-                                        href="/collections?collectionId={CommonHelper.getCollectionIDByName(
+                                        href="/admin/collections?collectionId={CommonHelper.getCollectionIDByName(
                                             $collections,
                                             cr.table
                                         )}&filter={CommonHelper.createFilterLink(

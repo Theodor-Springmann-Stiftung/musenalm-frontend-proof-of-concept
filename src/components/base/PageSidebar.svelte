@@ -5,6 +5,9 @@
     const widthStorageKey = "@adminSidebarWidth";
 
     let classes = "";
+    let isMinimized = false;
+
+    export { isMinimized };
     export { classes as class }; // export reserved keyword
 
     let sidebarElem;

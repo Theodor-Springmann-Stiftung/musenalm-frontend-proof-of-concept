@@ -39,25 +39,25 @@ const routes = {
         userData: { showAppSidebar: false },
     }),
 
-    "/collections": wrap({
+    "/admin/collections": wrap({
         component:  PageRecords,
         conditions: baseConditions.concat([(_) => ApiClient.authStore.isValid]),
         userData: { showAppSidebar: true },
     }),
 
-    "/texts": wrap({
+    "/admin/site": wrap({
         component:  PageTexts,
         conditions: baseConditions.concat([(_) => ApiClient.authStore.isValid]),
         userData: { showAppSidebar: true },
     }),
 
-    "/settings": wrap({
+    "/admin/settings": wrap({
         component:  PageApplication,
         conditions: baseConditions.concat([(_) => ApiClient.authStore.isValid]),
         userData: { showAppSidebar: true },
     }),
 
-    "/settings/admins": wrap({
+    "/admin/settings/admins": wrap({
         component:  PageAdmins,
         conditions: baseConditions.concat([(_) => ApiClient.authStore.isValid]),
         userData: { showAppSidebar: true },
