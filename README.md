@@ -1,7 +1,9 @@
-Musenalm Admin dashboard UI
+Musenalm Admin dashboard UI -- Proof of concept
 ======================================================================
 
 This is the Musenalm Admin dashboard UI (built with Svelte and Vite).
+
+Based on the pocketbase admin UI, which is distributed and licensed under the [MIT license](https://github.com/pocketbase/pocketbase/blob/master/LICENSE.md) (2023-12-13).
 
 ## Development
 
